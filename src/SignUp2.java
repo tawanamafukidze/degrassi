@@ -9,6 +9,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JFormattedTextField;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class SignUp2 extends JFrame {
@@ -29,6 +33,24 @@ public class SignUp2 extends JFrame {
 				}
 			}
 		});
+	}
+	Connection con;
+	PreparedStatement pst;
+	
+	public void connect() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			try {
+				con = DriverManager.getConnection("jdbc:mysql://localhost/degrassi", "root", "Aaronstone07");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 
 	/**
@@ -75,18 +97,9 @@ public class SignUp2 extends JFrame {
 		txtCity.setBounds(311, 116, 99, 20);
 		contentPane.add(txtCity);
 		
-		JFormattedTextField txtPhoneNumber = new JFormattedTextField();
-		txtPhoneNumber.setBounds(311, 170, 99, 20);
-		contentPane.add(txtPhoneNumber);
-		
-		JFormattedTextField txtProvince = new JFormattedTextField();
-		txtProvince.setBounds(311, 91, 99, 20);
-		contentPane.add(txtProvince);
-		
-		JLabel lblNewLabel_5 = new JLabel("");
-		lblNewLabel_5.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\phonenumber.png"));
-		lblNewLabel_5.setBounds(50, 176, 117, 14);
-		contentPane.add(lblNewLabel_5);
+		JFormattedTextField txtState = new JFormattedTextField();
+		txtState.setBounds(311, 91, 99, 20);
+		contentPane.add(txtState);
 		
 		JLabel lblNewLabel_4 = new JLabel("");
 		lblNewLabel_4.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\Street.png"));

@@ -80,14 +80,14 @@ public class SignUp extends JFrame {
 			}
 		});
 		
-		JFormattedTextField txtFirstName_1 = new JFormattedTextField();
-		txtFirstName_1.setBounds(296, 248, 136, 20);
-		contentPane.add(txtFirstName_1);
+		JFormattedTextField txtPhoneNumber = new JFormattedTextField();
+		txtPhoneNumber.setBounds(296, 248, 136, 20);
+		contentPane.add(txtPhoneNumber);
 		
-		JLabel lblNewLabel_5_1 = new JLabel("");
-		lblNewLabel_5_1.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\phonenumber.png"));
-		lblNewLabel_5_1.setBounds(27, 254, 117, 14);
-		contentPane.add(lblNewLabel_5_1);
+		JLabel PhoneNumberLabel = new JLabel("");
+		PhoneNumberLabel.setIcon(new ImageIcon("img\\phonenumber.png"));
+		PhoneNumberLabel.setBounds(27, 254, 117, 14);
+		contentPane.add(PhoneNumberLabel);
 		
 		txtRePassword = new JPasswordField();
 		txtRePassword.setBounds(297, 218, 135, 20);
@@ -108,7 +108,7 @@ public class SignUp extends JFrame {
 		JFormattedTextField txtFirstName = new JFormattedTextField();
 		txtFirstName.setBounds(296, 63, 136, 20);
 		contentPane.add(txtFirstName);
-		btnNewButton.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\backbtn2.png"));
+		btnNewButton.setIcon(new ImageIcon("img\\backbtn2.png"));
 		btnNewButton.setBounds(27, 305, 89, 23);
 		contentPane.add(btnNewButton);
 		
@@ -118,22 +118,24 @@ public class SignUp extends JFrame {
 
 				try {
 					
-					String uFirstName = txtFirstName.getText();
-					String uSurname = txtSurname.getText();
-					String uEmailAddress = txtEmailAddress.getText();
-					String uPassword = txtPassword.getText();
-					String uRePassword = txtRePassword.getText();
+					String FirstName = txtFirstName.getText();
+					String Surname = txtSurname.getText();
+					String EmailAddress = txtEmailAddress.getText();
+					String Password = txtPassword.getText();
+					String RePassword = txtRePassword.getText();
+					String PhoneNumber = txtPhoneNumber.getText();
 					
-					if (!uPassword.equals(uRePassword)) {
+					if (!Password.equals(RePassword)) {
 						
 						JOptionPane.showMessageDialog(txtPassword,"Passwords do not match");
 					}
-					else {
-					pst = con.prepareStatement("Insert into users(FirstName, Surname, EmailAddress,Password) Values(?,?,?,?)");
-					pst.setString(1, uFirstName);
-					pst.setString(2, uSurname);
-					pst.setString(3, uEmailAddress);
-					pst.setString(4, uPassword);
+				else {
+					pst = con.prepareStatement("Insert into Customers(FirstName, Surname, EmailAddress,Password,PhoneNumber) Values(?,?,?,?)");
+					pst.setString(1, FirstName);
+					pst.setString(2, Surname);
+					pst.setString(3, EmailAddress);
+					pst.setString(4, Password);
+					pst.setString(5, PhoneNumber);
 					pst.executeUpdate();
 					
 					dispose();
@@ -152,51 +154,47 @@ public class SignUp extends JFrame {
 				
 			}
 		});
-		realnxtbtn.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\nxt4.png"));
+		realnxtbtn.setIcon(new ImageIcon("img\\nxt4.png"));
 		realnxtbtn.setBounds(352, 305, 79, 23);
 		contentPane.add(realnxtbtn);
 		
-		JLabel lblNewLabel_6 = new JLabel("");
-		lblNewLabel_6.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\heading3.png"));
-		lblNewLabel_6.setBounds(49, 11, 376, 46);
-		contentPane.add(lblNewLabel_6);
+		JLabel degrassi = new JLabel("");
+		degrassi.setIcon(new ImageIcon("img\\heading3.png"));
+		degrassi.setBounds(49, 11, 376, 46);
+		contentPane.add(degrassi);
 		
-		JLabel lblNewLabel_5 = new JLabel("");
-		lblNewLabel_5.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\reenterpass.png"));
-		lblNewLabel_5.setBounds(27, 218, 161, 14);
-		contentPane.add(lblNewLabel_5);
+		JLabel ReEnterLabel = new JLabel("");
+		ReEnterLabel.setIcon(new ImageIcon("img\\reenterpass.png"));
+		ReEnterLabel.setBounds(27, 218, 161, 14);
+		contentPane.add(ReEnterLabel);
 		
-		JLabel lblNewLabel_4 = new JLabel("");
-		lblNewLabel_4.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\passwordsign.png"));
-		lblNewLabel_4.setBounds(27, 186, 112, 14);
-		contentPane.add(lblNewLabel_4);
+		JLabel PasswordLabel = new JLabel("");
+		PasswordLabel.setIcon(new ImageIcon("img\\passwordsign.png"));
+		PasswordLabel.setBounds(27, 186, 112, 14);
+		contentPane.add(PasswordLabel);
 		
-		JLabel lblNewLabel_3 = new JLabel("");
-		lblNewLabel_3.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\surname.png"));
-		lblNewLabel_3.setBounds(27, 106, 79, 14);
-		contentPane.add(lblNewLabel_3);
+		JLabel SurnameLabel = new JLabel("");
+		SurnameLabel.setIcon(new ImageIcon("img\\surname.png"));
+		SurnameLabel.setBounds(27, 106, 79, 14);
+		contentPane.add(SurnameLabel);
 		
-		JLabel lblNewLabel_2 = new JLabel("");
-		lblNewLabel_2.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\firstname.png"));
-		lblNewLabel_2.setBounds(27, 68, 112, 14);
-		contentPane.add(lblNewLabel_2);
+		JLabel FirstNameLabel = new JLabel("");
+		FirstNameLabel.setIcon(new ImageIcon("img\\firstname.png"));
+		FirstNameLabel.setBounds(27, 68, 112, 14);
+		contentPane.add(FirstNameLabel);
 		
-		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\addy.png"));
-		lblNewLabel_1.setBounds(27, 137, 123, 22);
-		contentPane.add(lblNewLabel_1);
+		JLabel EmailAddressLabel = new JLabel("");
+		EmailAddressLabel.setIcon(new ImageIcon("img\\addy.png"));
+		EmailAddressLabel.setBounds(27, 137, 123, 22);
+		contentPane.add(EmailAddressLabel);
 		
 		JLabel nextbtn = new JLabel("");
-		nextbtn.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\ps4 wall.png"));
+		nextbtn.setIcon(new ImageIcon("img\\ps4 wall.png"));
 		nextbtn.setBounds(10, -34, 467, 414);
 		contentPane.add(nextbtn);
 		
-		JFormattedTextField txtEmailAddress_1 = new JFormattedTextField();
-		txtEmailAddress_1.setBounds(296, 218, 136, 20);
-		contentPane.add(txtEmailAddress_1);
-		
-		JFormattedTextField txtSurname_1 = new JFormattedTextField();
-		txtSurname_1.setBounds(295, 218, 136, 20);
-		contentPane.add(txtSurname_1);
+		JFormattedTextField txtReEnterPassword = new JFormattedTextField();
+		txtReEnterPassword.setBounds(296, 218, 136, 20);
+		contentPane.add(txtReEnterPassword);
 	}
 }

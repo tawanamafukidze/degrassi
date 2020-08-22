@@ -10,6 +10,10 @@ import javax.swing.JButton;
 import java.awt.Color;
 import java.awt.SystemColor;
 import java.awt.event.ActionListener;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 
 public class MainFrame extends JFrame {
@@ -31,11 +35,30 @@ public class MainFrame extends JFrame {
 			}
 		});
 	}
-
+	Connection con;
+	PreparedStatement pst;
+	
+	public void connect() {
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			try {
+				con = DriverManager.getConnection("jdbc:mysql://localhost/degrassi", "root", "Aaronstone07");
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
 	/**
 	 * Create the frame.
 	 */
 	public MainFrame() {
+		
+		connect();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 479, 301);
 		contentPane = new JPanel();
