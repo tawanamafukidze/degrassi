@@ -73,7 +73,7 @@ public class SignUp2 extends JFrame {
 				
 			}
 		});
-		btnNewButton_1.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\nxt4.png"));
+		btnNewButton_1.setIcon(new ImageIcon("img\\nxt4.png"));
 		btnNewButton_1.setBounds(331, 207, 79, 23);
 		contentPane.add(btnNewButton_1);
 		
@@ -85,7 +85,7 @@ public class SignUp2 extends JFrame {
 				s.setVisible(true);
 			}
 		});
-		btnNewButton.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\backbtn2.png"));
+		btnNewButton.setIcon(new ImageIcon("img\\backbtn2.png"));
 		btnNewButton.setBounds(50, 207, 89, 23);
 		contentPane.add(btnNewButton);
 		
@@ -102,27 +102,27 @@ public class SignUp2 extends JFrame {
 		contentPane.add(txtState);
 		
 		JLabel lblNewLabel_4 = new JLabel("");
-		lblNewLabel_4.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\Street.png"));
+		lblNewLabel_4.setIcon(new ImageIcon("img\\Street.png"));
 		lblNewLabel_4.setBounds(50, 147, 80, 14);
 		contentPane.add(lblNewLabel_4);
 		
 		JLabel lblNewLabel_3 = new JLabel("");
-		lblNewLabel_3.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\city.png"));
+		lblNewLabel_3.setIcon(new ImageIcon("img\\city.png"));
 		lblNewLabel_3.setBounds(50, 122, 46, 14);
 		contentPane.add(lblNewLabel_3);
 		
 		JLabel lblNewLabel_2 = new JLabel("");
-		lblNewLabel_2.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\heading3.png"));
+		lblNewLabel_2.setIcon(new ImageIcon("img\\heading3.png"));
 		lblNewLabel_2.setBounds(50, 11, 360, 42);
 		contentPane.add(lblNewLabel_2);
 		
 		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\statecode2.png"));
+		lblNewLabel_1.setIcon(new ImageIcon("img\\statecode2.png"));
 		lblNewLabel_1.setBounds(50, 97, 117, 14);
 		contentPane.add(lblNewLabel_1);
 		
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\resize-1598019257675522578ps4wall.png"));
+		lblNewLabel.setIcon(new ImageIcon("img\\resize-1598019257675522578ps4wall.png"));
 		lblNewLabel.setBounds(0, -18, 475, 273);
 		contentPane.add(lblNewLabel);
 	}

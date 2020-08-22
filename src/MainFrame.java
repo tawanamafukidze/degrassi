@@ -76,7 +76,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 		btnNewButton_1.setBackground(Color.LIGHT_GRAY);
-		btnNewButton_1.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\client.png"));
+		btnNewButton_1.setIcon(new ImageIcon(""img\\client.png"));
 		btnNewButton_1.setBounds(276, 174, 143, 38);
 		contentPane.add(btnNewButton_1);
 		
@@ -92,17 +92,17 @@ public class MainFrame extends JFrame {
 		});
 		btnNewButton.setForeground(Color.BLACK);
 		btnNewButton.setBackground(new Color(0, 0, 0));
-		btnNewButton.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\admin.png"));
+		btnNewButton.setIcon(new ImageIcon(""img\\admin.png"));
 		btnNewButton.setBounds(55, 174, 132, 38);
 		contentPane.add(btnNewButton);
 		
 		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\heading3.png"));
+		lblNewLabel_1.setIcon(new ImageIcon(""img\\heading3.png"));
 		lblNewLabel_1.setBounds(50, 24, 382, 63);
 		contentPane.add(lblNewLabel_1);
 		
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\resize-1598019257675522578ps4wall.png"));
+		lblNewLabel.setIcon(new ImageIcon(""img\\resize-1598019257675522578ps4wall.png"));
 		lblNewLabel.setBounds(0, 0, 468, 261);
 		contentPane.add(lblNewLabel);
 	}

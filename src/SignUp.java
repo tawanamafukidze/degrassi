@@ -85,7 +85,7 @@ public class SignUp extends JFrame {
 		contentPane.add(txtPhoneNumber);
 		
 		JLabel PhoneNumberLabel = new JLabel("");
-		PhoneNumberLabel.setIcon(new ImageIcon("img\\phonenumber.png"));
+		PhoneNumberLabel.setIcon(new ImageIcon(""img\\phonenumber.png"));
 		PhoneNumberLabel.setBounds(27, 254, 117, 14);
 		contentPane.add(PhoneNumberLabel);
 		
@@ -108,7 +108,7 @@ public class SignUp extends JFrame {
 		JFormattedTextField txtFirstName = new JFormattedTextField();
 		txtFirstName.setBounds(296, 63, 136, 20);
 		contentPane.add(txtFirstName);
-		btnNewButton.setIcon(new ImageIcon("img\\backbtn2.png"));
+		btnNewButton.setIcon(new ImageIcon(""img\\backbtn2.png"));
 		btnNewButton.setBounds(27, 305, 89, 23);
 		contentPane.add(btnNewButton);
 		
@@ -154,42 +154,42 @@ public class SignUp extends JFrame {
 				
 			}
 		});
-		realnxtbtn.setIcon(new ImageIcon("img\\nxt4.png"));
+		realnxtbtn.setIcon(new ImageIcon(""img\\nxt4.png"));
 		realnxtbtn.setBounds(352, 305, 79, 23);
 		contentPane.add(realnxtbtn);
 		
 		JLabel degrassi = new JLabel("");
-		degrassi.setIcon(new ImageIcon("img\\heading3.png"));
+		degrassi.setIcon(new ImageIcon(""img\\heading3.png"));
 		degrassi.setBounds(49, 11, 376, 46);
 		contentPane.add(degrassi);
 		
 		JLabel ReEnterLabel = new JLabel("");
-		ReEnterLabel.setIcon(new ImageIcon("img\\reenterpass.png"));
+		ReEnterLabel.setIcon(new ImageIcon(""img\\reenterpass.png"));
 		ReEnterLabel.setBounds(27, 218, 161, 14);
 		contentPane.add(ReEnterLabel);
 		
 		JLabel PasswordLabel = new JLabel("");
-		PasswordLabel.setIcon(new ImageIcon("img\\passwordsign.png"));
+		PasswordLabel.setIcon(new ImageIcon(""img\\passwordsign.png"));
 		PasswordLabel.setBounds(27, 186, 112, 14);
 		contentPane.add(PasswordLabel);
 		
 		JLabel SurnameLabel = new JLabel("");
-		SurnameLabel.setIcon(new ImageIcon("img\\surname.png"));
+		SurnameLabel.setIcon(new ImageIcon(""img\\surname.png"));
 		SurnameLabel.setBounds(27, 106, 79, 14);
 		contentPane.add(SurnameLabel);
 		
 		JLabel FirstNameLabel = new JLabel("");
-		FirstNameLabel.setIcon(new ImageIcon("img\\firstname.png"));
+		FirstNameLabel.setIcon(new ImageIcon(""img\\firstname.png"));
 		FirstNameLabel.setBounds(27, 68, 112, 14);
 		contentPane.add(FirstNameLabel);
 		
 		JLabel EmailAddressLabel = new JLabel("");
-		EmailAddressLabel.setIcon(new ImageIcon("img\\addy.png"));
+		EmailAddressLabel.setIcon(new ImageIcon(""img\\addy.png"));
 		EmailAddressLabel.setBounds(27, 137, 123, 22);
 		contentPane.add(EmailAddressLabel);
 		
 		JLabel nextbtn = new JLabel("");
-		nextbtn.setIcon(new ImageIcon("img\\ps4 wall.png"));
+		nextbtn.setIcon(new ImageIcon(""img\\ps4 wall.png"));
 		nextbtn.setBounds(10, -34, 467, 414);
 		contentPane.add(nextbtn);
 		

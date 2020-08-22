@@ -57,7 +57,7 @@ public class ClientMainFrame extends JFrame {
 		txtPassword = new JPasswordField();
 		txtPassword.setBounds(306, 183, 135, 20);
 		contentPane.add(txtPassword);
-		btnNewButton_2.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\signup2.png"));
+		btnNewButton_2.setIcon(new ImageIcon("img\\signup2.png"));
 		btnNewButton_2.setBounds(197, 224, 103, 23);
 		contentPane.add(btnNewButton_2);
 		
@@ -72,7 +72,7 @@ public class ClientMainFrame extends JFrame {
 				
 			}
 		});
-		btnNewButton_1.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\nxt4.png"));
+		btnNewButton_1.setIcon(new ImageIcon("img\\nxt4.png"));
 		btnNewButton_1.setBounds(362, 224, 79, 23);
 		contentPane.add(btnNewButton_1);
 		
@@ -84,27 +84,27 @@ public class ClientMainFrame extends JFrame {
 				m.setVisible(true);
 			}
 		});
-		btnNewButton.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\backbtn3.png"));
+		btnNewButton.setIcon(new ImageIcon("img\\backbtn3.png"));
 		btnNewButton.setBounds(53, 224, 75, 23);
 		contentPane.add(btnNewButton);
 		
 		JLabel lblNewLabel_1_1_1 = new JLabel("");
-		lblNewLabel_1_1_1.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\loginpass4.png"));
+		lblNewLabel_1_1_1.setIcon(new ImageIcon("img\\loginpass4.png"));
 		lblNewLabel_1_1_1.setBounds(53, 170, 153, 43);
 		contentPane.add(lblNewLabel_1_1_1);
 		
 		JLabel lblNewLabel_1_1 = new JLabel("");
-		lblNewLabel_1_1.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\emailaddylogin.png"));
+		lblNewLabel_1_1.setIcon(new ImageIcon("img\\emailaddylogin.png"));
 		lblNewLabel_1_1.setBounds(53, 141, 206, 43);
 		contentPane.add(lblNewLabel_1_1);
 		
 		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\heading3.png"));
+		lblNewLabel_1.setIcon(new ImageIcon("img\\heading3.png"));
 		lblNewLabel_1.setBounds(53, 22, 415, 45);
 		contentPane.add(lblNewLabel_1);
 		
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\Downloads\\resize-1598019257675522578ps4wall.png"));
+		lblNewLabel.setIcon(new ImageIcon("img\\resize-1598019257675522578ps4wall.png"));
 		lblNewLabel.setBounds(0, 0, 468, 261);
 		contentPane.add(lblNewLabel);
 	}
