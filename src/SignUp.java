@@ -40,30 +40,18 @@ public class SignUp extends JFrame {
 		});
 	}
 
-	Connection con;
-	PreparedStatement pst;
 	
-	public void connect() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			try {
-				con = DriverManager.getConnection("jdbc:mysql://localhost/degrassi", "root", "Aaronstone07");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 	/**
 	 * Create the frame.
 	 */
+	PreparedStatement pst;
+	Connection con;
+	
 	public SignUp() {
 		
-		connect();
+		con = new DatabaseConnection().getConnection();
+		
+		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 592, 665);

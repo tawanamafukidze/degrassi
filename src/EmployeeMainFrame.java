@@ -28,7 +28,7 @@ public class EmployeeMainFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					EmployeeMainFrame frame = new EmployeeMainFrame();
+					EmployeeMainFrame frame = new EmployeeMainFrame(DatabaseConnection);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -40,32 +40,15 @@ public class EmployeeMainFrame extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	Connection con;
-	PreparedStatement pst;
-	
-	public void connect() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			try {
-				con = DriverManager.getConnection("jdbc:mysql://localhost/Degrassi", "root", "Aaronstone07");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
+	private Connection con;
+	private PreparedStatement pst;
 	
 		
 	
 		
 	
-	public EmployeeMainFrame() {
-		 
-		connect();
+	public EmployeeMainFrame(DatabaseConnection con) {
+		 this.con = con; 
 	
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

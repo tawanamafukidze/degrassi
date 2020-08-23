@@ -38,27 +38,12 @@ public class MainFrame extends JFrame {
 	Connection con;
 	PreparedStatement pst;
 	
-	public void connect() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			try {
-				con = DriverManager.getConnection("jdbc:mysql://localhost/degrassi", "root", "Aaronstone07");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 	/**
 	 * Create the frame.
 	 */
 	public MainFrame() {
 		
-		connect();
+		DatabaseConnection con = new DatabaseConnection();
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 479, 301);
 		contentPane = new JPanel();
@@ -85,7 +70,7 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				
 				dispose();
-				EmployeeMainFrame i = new EmployeeMainFrame();
+				EmployeeMainFrame i = new EmployeeMainFrame(con);
 				i.setVisible(true);
 				
 			}
