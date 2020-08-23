@@ -18,6 +18,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -40,22 +41,8 @@ import javax.swing.JList;
 
 public class AdminSearch extends JFrame {
 	
-	
-	DefaultListModel defaultListModel = new DefaultListModel();
-	
-	
-	
-	
-
 	private JPanel contentPane;
 	
-
-	
-	
-
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -70,10 +57,10 @@ public class AdminSearch extends JFrame {
 	}
 	
 	Connection con;
-//	con = new DatabaseConnection().getConnection();
+
 	PreparedStatement pst;
 	DefaultTableModel tbl;
-	DefaultListModel defaultlistmodel = new DefaultListModel();
+	DefaultListModel dl;
 	
 	
 	private JTable tblProducts;
@@ -141,66 +128,18 @@ public void load() {
 			Logger.getLogger(AdminSearch.class.getName()).isLoggable(Level.SEVERE);
 		}
 	}
+
 public void loadlist() {
-	int a;
-	try {
-		pst = con.prepareStatement("select Title from games");
+	
+	dl.addElement("Title");
+	GameList.setModel(dl);
+	
+	
 		
-		ResultSet rs = pst.executeQuery();
-		
-		
-		ResultSetMetaData rd = (ResultSetMetaData) rs.getMetaData();
-		
-		a = rd.getColumnCount();
-		
-		tbl = (DefaultTableModel)tblProducts.getModel();
-		tbl.setRowCount(0);
-		
-		while (rs.next()) {
-			Vector v2 = new Vector();
-			
-			for(int i = 1; i <= a; i++) {
-				
-				v2.add(rs.getString("Title"));
-				
-			}
-			
-			tbl.addRow(v2);
-			
-			
-		}
-		
-		
-	}catch (SQLException ex) {
-		Logger.getLogger(AdminSearch.class.getName()).isLoggable(Level.SEVERE);
-	}
+	
 }
-	
-
-		
-	
-	
-		
-
 	public AdminSearch() {
 	con = new DatabaseConnection().getConnection();
-	 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 707, 519);
@@ -216,6 +155,16 @@ public void loadlist() {
 		tabbedPane.addTab("", new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\searchmall.png"), Search, null);
 		tabbedPane.setBackgroundAt(0, Color.BLACK);
 		Search.setLayout(null);
+		
+		JList GameList = new JList();
+		GameList.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				
+		});
+		GameList.setBounds(116, 108, 435, 545);
+		Search.add(GameList);
 		
 		JLabel degrassii = new JLabel("");
 		degrassii.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\heading3.png"));
@@ -241,16 +190,6 @@ public void loadlist() {
 		});
 		SearchBar.setBounds(118, 89, 433, 20);
 		Search.add(SearchBar);
-		
-		JList list = new JList();
-		list.addMouseListener(new MouseAdapter() {
-			
-			@Override
-			public void mouseClicked(MouseEvent e) {
-			}
-		});
-		list.setBounds(116, 108, 435, 545);
-		Search.add(list);
 		
 		JLabel lblNewLabel_3 = new JLabel("");
 		lblNewLabel_3.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\ps4 wall.png"));
@@ -421,5 +360,9 @@ public void loadlist() {
 		Update.add(BackgroundUpdate);
 		
 		load();
+		loadlist();
+		}
+			
+
+				
 	}
-}
