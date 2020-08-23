@@ -36,6 +36,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JList;
 
 public class AdminSearch extends JFrame {
 	
@@ -72,6 +73,7 @@ public class AdminSearch extends JFrame {
 //	con = new DatabaseConnection().getConnection();
 	PreparedStatement pst;
 	DefaultTableModel tbl;
+	DefaultListModel defaultlistmodel = new DefaultListModel();
 	
 	
 	private JTable tblProducts;
@@ -139,6 +141,41 @@ public void load() {
 			Logger.getLogger(AdminSearch.class.getName()).isLoggable(Level.SEVERE);
 		}
 	}
+public void loadlist() {
+	int a;
+	try {
+		pst = con.prepareStatement("select Title from games");
+		
+		ResultSet rs = pst.executeQuery();
+		
+		
+		ResultSetMetaData rd = (ResultSetMetaData) rs.getMetaData();
+		
+		a = rd.getColumnCount();
+		
+		tbl = (DefaultTableModel)tblProducts.getModel();
+		tbl.setRowCount(0);
+		
+		while (rs.next()) {
+			Vector v2 = new Vector();
+			
+			for(int i = 1; i <= a; i++) {
+				
+				v2.add(rs.getString("Title"));
+				
+			}
+			
+			tbl.addRow(v2);
+			
+			
+		}
+		
+		
+	}catch (SQLException ex) {
+		Logger.getLogger(AdminSearch.class.getName()).isLoggable(Level.SEVERE);
+	}
+}
+	
 
 		
 	
@@ -194,6 +231,7 @@ public void load() {
 		SearchBar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				
 			}
 		});
 		SearchBar.addKeyListener(new KeyAdapter() {
@@ -203,6 +241,16 @@ public void load() {
 		});
 		SearchBar.setBounds(118, 89, 433, 20);
 		Search.add(SearchBar);
+		
+		JList list = new JList();
+		list.addMouseListener(new MouseAdapter() {
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+			}
+		});
+		list.setBounds(116, 108, 435, 545);
+		Search.add(list);
 		
 		JLabel lblNewLabel_3 = new JLabel("");
 		lblNewLabel_3.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\ps4 wall.png"));
