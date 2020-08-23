@@ -188,6 +188,18 @@ public class SignUp extends JFrame {
 					pst.setString(4, Street);
 					pst.executeUpdate();
 					
+					txtFirstName.setText("");
+					txtSurname.setText("");
+					txtEmailAddress.setText("");
+					txtPhoneNumber.setText("");
+					txtPassword.setText("");
+					
+					txtState.setText("");
+					txtCity.setText("");
+					txtStreet.setText("");
+					txtPostalCode.setText("");
+					txtEmailAddress.requestFocus(); //Returns Cursor to Initial TextField "Email Address" at the top of the window
+					
 					dispose();
 					ClientMainFrame c =  new ClientMainFrame();
 					c.setVisible(true);
