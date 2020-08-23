@@ -27,7 +27,8 @@ public class MainFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					MainFrame frame = new MainFrame();
+					Connection con = new MYSQLConnection().getDBConnection();
+					MainFrame frame = new MainFrame(con);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -35,43 +36,32 @@ public class MainFrame extends JFrame {
 			}
 		});
 	}
-	Connection con;
-	PreparedStatement pst;
-	
-	public void connect() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			try {
-				con = DriverManager.getConnection("jdbc:mysql://192.168.1.48/degrassi", "root", "Aaronstone07");
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-	}
 	/**
 	 * Create the frame.
 	 */
-	public MainFrame() {
-		
-		connect();
+	private Connection con;
+	public MainFrame(Connection con) {
+		this.con = con;
+		getWidgets();
+	}
+
+	//default constructor for extending classes
+	public MainFrame() {}
+
+	private void getWidgets() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 479, 301);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
-		
+
 		JButton btnNewButton_1 = new JButton("");
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				dispose();
-				ClientMainFrame c = new ClientMainFrame();
+				ClientMainFrame c = new ClientMainFrame(con);
 				c.setVisible(true);
 			}
 		});
@@ -79,15 +69,15 @@ public class MainFrame extends JFrame {
 		btnNewButton_1.setIcon(new ImageIcon("img\\client.png"));
 		btnNewButton_1.setBounds(276, 174, 143, 38);
 		contentPane.add(btnNewButton_1);
-		
+
 		JButton btnNewButton = new JButton("");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+
 				dispose();
-				EmployeeMainFrame i = new EmployeeMainFrame();
+				EmployeeMainFrame i = new EmployeeMainFrame(con);
 				i.setVisible(true);
-				
+
 			}
 		});
 		btnNewButton.setForeground(Color.BLACK);
@@ -95,12 +85,12 @@ public class MainFrame extends JFrame {
 		btnNewButton.setIcon(new ImageIcon("img\\admin.png"));
 		btnNewButton.setBounds(55, 174, 132, 38);
 		contentPane.add(btnNewButton);
-		
+
 		JLabel lblNewLabel_1 = new JLabel("");
 		lblNewLabel_1.setIcon(new ImageIcon("img\\heading3.png"));
 		lblNewLabel_1.setBounds(50, 24, 382, 63);
 		contentPane.add(lblNewLabel_1);
-		
+
 		JLabel lblNewLabel = new JLabel("");
 		lblNewLabel.setIcon(new ImageIcon("img\\resize-1598019257675522578ps4wall.png"));
 		lblNewLabel.setBounds(0, 0, 468, 261);

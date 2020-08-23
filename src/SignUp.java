@@ -77,7 +77,7 @@ public class SignUp extends JFrame {
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
-                ClientMainFrame c = new ClientMainFrame();
+                ClientMainFrame c = new ClientMainFrame(con);
                 c.setVisible(true);
             }
         });

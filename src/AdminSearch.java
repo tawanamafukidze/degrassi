@@ -35,7 +35,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JList;
-
+/*
 public class AdminSearch extends JFrame {
 	
 	private JPanel contentPane;
@@ -136,7 +136,7 @@ public void loadlist() {
 	
 }
 	public AdminSearch() {
-	con = new DatabaseConnection().getConnection();
+	con = new MYSQLConnection().getConnection();
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 707, 519);
@@ -363,3 +363,4 @@ public void loadlist() {
 
 				
 	}
+ */

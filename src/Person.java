@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public abstract class Person extends MainFrame{
+public abstract class Person extends MainFrame {
     private String id;
     private String firstName;
     private String lastName;
@@ -16,7 +16,7 @@ public abstract class Person extends MainFrame{
     private boolean isActive = false;
     private boolean isEmployee;
 
-    public Person(Connection con, String firstName, String lastName, String email, String password, String phone){
+    public Person(Connection con, String firstName, String lastName, String email, String password, String phone) {
         db = con; //get the mysql connection instance
         if (FieldLengthInvalid(firstName, 1, 30)) {
             JOptionPane.showMessageDialog(this,
@@ -82,13 +82,6 @@ public abstract class Person extends MainFrame{
             return;
         }
 
-        if (emailUnique(email)) {
-            JOptionPane.showMessageDialog(this,
-                    "Please check if you've entered the correct email and password."
-            );
-            return;
-        }
-
         if (FieldLengthInvalid(password, 1, 120)) {
             JOptionPane.showMessageDialog(this,
                     "Password must be at least 1 character long.");
@@ -122,47 +115,83 @@ public abstract class Person extends MainFrame{
         return true;
     }
 
-    public boolean isValidEntry() { return isValidEntry; }
+    public boolean isValidEntry() {
+        return isValidEntry;
+    }
 
     private boolean phoneNumberInvalid(String phone) {
         if (phone == null) return true;
         try {
             Integer.parseInt(phone);
             return false;
-        } catch (NumberFormatException ignored) { return true; }
+        } catch (NumberFormatException ignored) {
+            return true;
+        }
     }
 
-    public boolean checkPassword(String userPass) { return password.equals(userPass); }
+    public boolean checkPassword(String userPass) {
+        return password.equals(userPass);
+    }
 
-    public String getPhone() { return phone; }
+    public String getPhone() {
+        return phone;
+    }
 
-    protected Connection dbConnection(){ return db; }
+    protected Connection dbConnection() {
+        return db;
+    }
 
-    protected void setFirstName(String firstName) { this.firstName = firstName; }
+    protected void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-    protected void setLastName(String lastName) { this.lastName = lastName; }
+    protected void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-    protected void setPhone(String phone) { this.phone = phone; }
+    protected void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-    protected void setPassword(String password) { this.password = password; }
+    protected void setPassword(String password) {
+        this.password = password;
+    }
 
-    protected void setEmail(String email) { this.email = email; }
+    protected void setEmail(String email) {
+        this.email = email;
+    }
 
-    protected String getPassword() { return password; }
+    protected String getPassword() {
+        return password;
+    }
 
-    protected String getEmail() { return email; }
+    protected String getEmail() {
+        return email;
+    }
 
-    protected String getLastName() { return lastName; }
+    protected String getLastName() {
+        return lastName;
+    }
 
-    protected void setId(String id) { this.id = id; }
+    protected void setId(String id) {
+        this.id = id;
+    }
 
-    protected String getId() { return id; }
+    protected String getId() {
+        return id;
+    }
 
-    protected String getFirstName() { return firstName; }
+    protected String getFirstName() {
+        return firstName;
+    }
 
-    protected void setActive(boolean b) { isActive = b; }
+    protected void setActive(boolean b) {
+        isActive = b;
+    }
 
-    protected boolean isUserActive(){ return isActive; }
+    protected boolean Active() {
+        return isActive;
+    }
 
     public boolean isEmployee() {
         return isEmployee;
@@ -174,17 +203,13 @@ public abstract class Person extends MainFrame{
 
     @Override
     public String toString() {
-        return "Person{" +
-                "id='" + id + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", phone='" + phone + '\'' +
-                ", db=" + db +
-                ", isValidEntry=" + isValidEntry +
-                ", isActive=" + isActive +
-                ", isEmployee=" + isEmployee +
-                '}';
+        return String.format("id: %s \n" +
+                "firstName: %s \n" +
+                "lastName: %s \n" +
+                "email: %s \n" +
+                "phone: %s \n" +
+                "isActive: %s \n" +
+                "isEmployee: %s \n", id, firstName, lastName, email, phone, isActive, isEmployee
+        );
     }
 }

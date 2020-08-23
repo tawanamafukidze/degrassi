@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -57,7 +58,7 @@ public class Address extends MainFrame {
     public Address queryAddress(String id) {
         String query = String.format("SELECT * FROM Address WHERE CustomerID = '%s'", id);
         try {
-            pst = con.prepareStatement(query);
+            PreparedStatement pst = db.prepareStatement(query);
             ResultSet result = pst.executeQuery();
 
             if (result.next()) {
@@ -82,7 +83,7 @@ public class Address extends MainFrame {
         }
 
         try {
-            pst = db.prepareStatement(
+            PreparedStatement pst = db.prepareStatement(
                     "Insert into Address(State, City, PostalCode, Street, CustomerID) Values(?,?,?,?,?)"
             );
             pst.setString(1, state);

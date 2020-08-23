@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -24,7 +25,8 @@ public class Customer extends Person {
 
     public String db_commit() {
         try {
-            pst = dbConnection().prepareStatement("Insert into Customers(FirstName, Surname, EmailAddress,Password,PhoneNumber) Values(?,?,?,?,?)");
+            PreparedStatement
+                    pst = dbConnection().prepareStatement("Insert into Customers(FirstName, Surname, EmailAddress,Password,PhoneNumber) Values(?,?,?,?,?)");
             pst.setString(1, getFirstName());
             pst.setString(2, getLastName());
             pst.setString(3, getEmail());
@@ -50,7 +52,7 @@ public class Customer extends Person {
                 "SELECT * FROM Customers WHERE EmailAddress = '%s' and Password = '%s'", email, password
         );
         try {
-            pst = dbConnection().prepareStatement(query);
+            PreparedStatement pst = dbConnection().prepareStatement(query);
             ResultSet result = pst.executeQuery();
             if (result.next()) {
                 //store to customer instance
@@ -64,7 +66,7 @@ public class Customer extends Person {
                 setPassword(password);
                 setPhone(phone);
                 String id = getId();
-                customerAddress = new Address(con).queryAddress(id);
+                customerAddress = new Address(dbConnection()).queryAddress(id);
                 //user has logged in
                 setActive(true);
             } else {
@@ -91,7 +93,12 @@ public class Customer extends Person {
         //TODO: Empty cart
     }
 
-    public String getCustomerAddress() { return customerAddress.toString(); }
+    public String getCustomerAddress() {
+        try {
+            return customerAddress.toString();
+        } catch (NullPointerException ignored) { }
+        return "";
+    }
 
     public static void main(String[] args) {
     }

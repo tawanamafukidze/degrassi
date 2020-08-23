@@ -1,9 +1,10 @@
 import javax.swing.*;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Employee extends Person{
+public class Employee extends Person {
 
     //Creates a new user instance and verifies the information provided by the client before committing to the the DB
     public Employee(Connection con, String firstName, String lastName, String email, String password, String phone) {
@@ -22,7 +23,7 @@ public class Employee extends Person{
 
     public String db_commit() {
         try {
-            pst = dbConnection().prepareStatement(
+            PreparedStatement pst = dbConnection().prepareStatement(
                     "Insert into Admin(FirstName, Surname, EmailAddress,Password,PhoneNumber) Values(?,?,?,?,?)"
             );
             pst.setString(1, getFirstName());
@@ -32,7 +33,7 @@ public class Employee extends Person{
             pst.setString(5, getPhone());
             pst.executeUpdate();
 
-            String query = String.format("SELECT * FROM Customers Where EmailAddress = '%s'", getEmail());
+            String query = String.format("SELECT * FROM Admin Where EmailAddress = '%s'", getEmail());
             pst = dbConnection().prepareStatement(query);
             ResultSet result = pst.executeQuery();
 
@@ -45,12 +46,12 @@ public class Employee extends Person{
         return null;
     }
 
-    public Employee queryEmployee(String email, String password) {
+    public void queryEmployee(String email, String password) {
         String query = String.format(
                 "SELECT * FROM Admin WHERE EmailAddress = '%s' and Password = '%s'", email, password
         );
         try {
-            pst = dbConnection().prepareStatement(query);
+            PreparedStatement pst = dbConnection().prepareStatement(query);
             ResultSet result = pst.executeQuery();
             if (result.next()) {
                 //store to customer instance
@@ -74,6 +75,5 @@ public class Employee extends Person{
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return null;
     }
 }

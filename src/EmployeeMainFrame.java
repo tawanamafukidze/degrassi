@@ -28,8 +28,8 @@ public class EmployeeMainFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					Connection myCon = connect();
-					EmployeeMainFrame frame = new EmployeeMainFrame(myCon);
+					Connection con = new MYSQLConnection().getDBConnection();
+					EmployeeMainFrame frame = new EmployeeMainFrame(con);
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -37,24 +37,6 @@ public class EmployeeMainFrame extends JFrame {
 			}
 		});
 	}
-	public static Connection connect() {
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-			try {
-				return DriverManager.getConnection(
-						"jdbc:mysql://192.168.1.48/Degrassi", "root", "Aaronstone07"
-				);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-	}
-
 
 	/**
 	 * Create the frame.
@@ -76,7 +58,7 @@ public class EmployeeMainFrame extends JFrame {
 		backbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				dispose();
-				MainFrame m = new MainFrame();
+				MainFrame m = new MainFrame(con);
 				m.setVisible(true);
 			}
 		});
@@ -88,7 +70,7 @@ public class EmployeeMainFrame extends JFrame {
 		txtPassword = new JPasswordField();
 		txtPassword.setBounds(290, 193, 135, 20);
 		contentPane.add(txtPassword);
-		backbtn.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\degrassi_repo\\DEGRASSI\\img\\backbtn3.png"));
+		backbtn.setIcon(new ImageIcon("img\\backbtn3.png"));
 		backbtn.setBounds(48, 221, 75, 23);
 		contentPane.add(backbtn);
 
@@ -100,8 +82,8 @@ public class EmployeeMainFrame extends JFrame {
 				String pass = txtPassword.getText();
 				Employee employee = new Employee(con, email, pass);
 
-				if (employee.isActive()) {
-					//TODO
+				if (employee.Active()) {
+					System.out.println(employee.toString());
 				}
 			}
 		});
