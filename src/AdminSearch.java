@@ -13,11 +13,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -31,7 +27,8 @@ import javax.swing.border.BevelBorder;
 import java.awt.Panel;
 import javax.swing.table.DefaultTableModel;
 
-import com.mysql.jdbc.ResultSetMetaData;
+import com.mysql.jdbc.*;
+import com.mysql.jdbc.Driver;
 
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
