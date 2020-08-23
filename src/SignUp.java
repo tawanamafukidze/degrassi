@@ -45,9 +45,9 @@ public class SignUp extends JFrame {
 
     public void connect() {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
+            Class.forName("com.mysql.cj.jdbc.Driver");
             try {
-                con = DriverManager.getConnection("jdbc:mysql://localhost/degrassi", "root", "Aaronstone07");
+                con = DriverManager.getConnection("jdbc:mysql://192.168.1.48/degrassi", "root", "Aaronstone07");
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
@@ -67,13 +67,13 @@ public class SignUp extends JFrame {
         connect();
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 592, 665);
+        setBounds(100, 100, 592, 665);
         contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         contentPane.setLayout(null);
 
-        JButton btnNewButton = new JButton("");
+        JButton btnNewButton = new JButton();
         btnNewButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 dispose();
@@ -87,42 +87,42 @@ public class SignUp extends JFrame {
         contentPane.add(txtPostalCode);
 
         JFormattedTextField txtStreet = new JFormattedTextField();
-        txtStreet.setBounds(296, 424, 136, 22);
+        txtStreet.setBounds(296, 334, 136, 22);
         contentPane.add(txtStreet);
 
         JFormattedTextField txtCity = new JFormattedTextField();
-        txtCity.setBounds(296, 379, 136, 22);
+        txtCity.setBounds(296, 424, 136, 22);
         contentPane.add(txtCity);
 
         JFormattedTextField txtState = new JFormattedTextField();
-        txtState.setBounds(296, 334, 136, 22);
+        txtState.setBounds(296, 379, 136, 22);
         contentPane.add(txtState);
 
-        JLabel PostalCodeLabel = new JLabel("");
-        PostalCodeLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\postalcode.png"));
+        JLabel PostalCodeLabel = new JLabel();
+        PostalCodeLabel.setIcon(new ImageIcon("img\\postalcode.png"));
         PostalCodeLabel.setBounds(28, 469, 102, 22);
         contentPane.add(PostalCodeLabel);
 
-        JLabel StreetLabel = new JLabel("");
-        StreetLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\Street.png"));
-        StreetLabel.setBounds(28, 424, 79, 22);
+        JLabel StreetLabel = new JLabel();
+        StreetLabel.setIcon(new ImageIcon("img\\Street.png"));
+        StreetLabel.setBounds(28, 334, 79, 22);
         contentPane.add(StreetLabel);
 
-        JLabel CityLabel = new JLabel("");
-        CityLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\city.png"));
+        JLabel CityLabel = new JLabel();
+        CityLabel.setIcon(new ImageIcon("img\\city.png"));
         CityLabel.setBounds(28, 379, 46, 22);
         contentPane.add(CityLabel);
 
         JLabel StateCodeLabel = new JLabel("New label");
-        StateCodeLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\statecode2.png"));
-        StateCodeLabel.setBounds(28, 334, 102, 22);
+        StateCodeLabel.setIcon(new ImageIcon("img\\statecode2.png"));
+        StateCodeLabel.setBounds(28, 424, 102, 22);
         contentPane.add(StateCodeLabel);
 
         JFormattedTextField txtPhoneNumber = new JFormattedTextField();
-		txtPhoneNumber.setBounds(296, 289, 136, 22);
+        txtPhoneNumber.setBounds(296, 289, 136, 22);
         contentPane.add(txtPhoneNumber);
 
-        JLabel PhoneNumberLabel = new JLabel("");
+        JLabel PhoneNumberLabel = new JLabel();
         PhoneNumberLabel.setIcon(new ImageIcon("img\\phonenumber.png"));
         PhoneNumberLabel.setBounds(28, 289, 117, 22);
         contentPane.add(PhoneNumberLabel);
@@ -146,69 +146,51 @@ public class SignUp extends JFrame {
         JFormattedTextField txtFirstName = new JFormattedTextField();
         txtFirstName.setBounds(296, 63, 136, 23);
         contentPane.add(txtFirstName);
+
         btnNewButton.setIcon(new ImageIcon("img\\backbtn2.png"));
         btnNewButton.setBounds(28, 521, 89, 23);
         contentPane.add(btnNewButton);
 
-        JButton realnxtbtn = new JButton("");
+        JButton realnxtbtn = new JButton();
         realnxtbtn.addActionListener(new ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
 
-                try {
+                String FirstName = txtFirstName.getText();
+                String Surname = txtSurname.getText();
+                String EmailAddress = txtEmailAddress.getText();
+                String Password = txtPassword.getText();
+                String RePassword = txtRePassword.getText();
+                String PhoneNumber = txtPhoneNumber.getText();
+                Customer newCustomer = new Customer(con, FirstName, Surname,
+                        EmailAddress, Password, PhoneNumber
+                );
 
-                    String FirstName = txtFirstName.getText();
-                    String Surname = txtSurname.getText();
-                    String EmailAddress = txtEmailAddress.getText();
-                    String Password = txtPassword.getText();
-                    String RePassword = txtRePassword.getText();
-                    String PhoneNumber = txtPhoneNumber.getText();
-                    Customer newCustomer = new Customer(con, FirstName, Surname, EmailAddress, Password, PhoneNumber)
-                    if (!Password.equals(RePassword)) {
-                        JOptionPane.showMessageDialog(txtPassword, "Passwords do not match");
-                    } else if (newCustomer.isValidEntry()) {
-                        pst = con.prepareStatement("Insert into Customers(FirstName, Surname, EmailAddress,Password,PhoneNumber) Values(?,?,?,?)");
-                        pst.setString(1, FirstName);
-                        pst.setString(2, Surname);
-                        pst.setString(3, EmailAddress);
-                        pst.setString(4, Password);
-                        pst.setString(5, PhoneNumber);
-                        pst.executeUpdate();
+                String State = txtState.getText();
+                String City = txtCity.getText();
+                String PostalCode = txtPostalCode.getText();
+                String Street = txtStreet.getText();
 
-                        String State = txtState.getText();
-                        String City = txtCity.getText();
-                        String PostalCode = txtPostalCode.getText();
-                        String Street = txtStreet.getText();
+                if (newCustomer.isValidEntry()) {
+                    if (newCustomer.checkPassword(RePassword)) {
+                        Address newAddress = new Address(con, Street, City, State, PostalCode);
 
-
-                        pst = con.prepareStatement("Insert into address(State, City, PostalCode, Street) Values(?,?,?,?)");
-                        pst.setString(1, State);
-                        pst.setString(2, City);
-                        pst.setString(3, PostalCode);
-                        pst.setString(4, Street);
-                        pst.executeUpdate();
-
-                        txtFirstName.setText("");
-                        txtSurname.setText("");
-                        txtEmailAddress.setText("");
-                        txtPhoneNumber.setText("");
-                        txtPassword.setText("");
-
-                        txtState.setText("");
-                        txtCity.setText("");
-                        txtStreet.setText("");
-                        txtPostalCode.setText("");
-                        txtEmailAddress.requestFocus(); //Returns Cursor to Initial TextField "Email Address" at the top of the window
-
-                        dispose();
-                        ClientMainFrame c = new ClientMainFrame();
-                        c.setVisible(true);
-
+                        if (newAddress.isValidEntry()) {
+                            String customerID = newCustomer.db_commit();
+                            //Don't Insert data into address table if no customerID was given (error during user creation)
+                            if (customerID != null) {
+                                newAddress.db_commit(customerID);
+                                dispose();
+                                new ClientMainFrame(con).setVisible(true);
+                            } else {
+                                JOptionPane.showMessageDialog(
+                                        contentPane, "Internal Error: User was not created. \n Please try again..."
+                                );
+                            }
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(txtPassword, "Password entered does not match.");
                     }
-                } catch (SQLException e1) {
-                    // TODO Auto-generated catch block
-                    e1.printStackTrace();
                 }
-
 
             }
         });
@@ -216,37 +198,37 @@ public class SignUp extends JFrame {
         realnxtbtn.setBounds(353, 514, 79, 23);
         contentPane.add(realnxtbtn);
 
-        JLabel degrassi = new JLabel("");
+        JLabel degrassi = new JLabel();
         degrassi.setIcon(new ImageIcon("img\\heading3.png"));
         degrassi.setBounds(49, 11, 376, 46);
         contentPane.add(degrassi);
 
-        JLabel ReEnterLabel = new JLabel("");
+        JLabel ReEnterLabel = new JLabel();
         ReEnterLabel.setIcon(new ImageIcon("img\\reenterpass.png"));
         ReEnterLabel.setBounds(28, 244, 161, 22);
         contentPane.add(ReEnterLabel);
 
-        JLabel PasswordLabel = new JLabel("");
+        JLabel PasswordLabel = new JLabel();
         PasswordLabel.setIcon(new ImageIcon("img\\passwordsign.png"));
         PasswordLabel.setBounds(28, 199, 112, 22);
         contentPane.add(PasswordLabel);
 
-        JLabel SurnameLabel = new JLabel("");
+        JLabel SurnameLabel = new JLabel();
         SurnameLabel.setIcon(new ImageIcon("img\\surname.png"));
-        SurnameLabel.setBounds(28, 154, 79, 22);
+        SurnameLabel.setBounds(28, 109, 79, 22);
         contentPane.add(SurnameLabel);
 
-        JLabel FirstNameLabel = new JLabel("");
+        JLabel FirstNameLabel = new JLabel();
         FirstNameLabel.setIcon(new ImageIcon("img\\firstname.png"));
-        FirstNameLabel.setBounds(28, 109, 112, 22);
+        FirstNameLabel.setBounds(28, 64, 112, 22);
         contentPane.add(FirstNameLabel);
 
-        JLabel EmailAddressLabel = new JLabel("");
+        JLabel EmailAddressLabel = new JLabel();
         EmailAddressLabel.setIcon(new ImageIcon("img\\addy.png"));
-        EmailAddressLabel.setBounds(28, 64, 123, 22);
+        EmailAddressLabel.setBounds(28, 154, 123, 22);
         contentPane.add(EmailAddressLabel);
 
-        JLabel nextbtn = new JLabel("");
+        JLabel nextbtn = new JLabel();
         nextbtn.setIcon(new ImageIcon("img\\ps4 wall.png"));
         nextbtn.setBounds(-19, -21, 659, 600);
         contentPane.add(nextbtn);

@@ -42,7 +42,7 @@ public class MainFrame extends JFrame {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			try {
-				con = DriverManager.getConnection("jdbc:mysql://localhost/degrassi", "root", "Aaronstone07");
+				con = DriverManager.getConnection("jdbc:mysql://192.168.1.48/degrassi", "root", "Aaronstone07");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

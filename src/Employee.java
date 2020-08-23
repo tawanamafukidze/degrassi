@@ -3,28 +3,28 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Customer extends Person {
-    private Address customerAddress;
+public class Employee extends Person{
 
     //Creates a new user instance and verifies the information provided by the client before committing to the the DB
-    public Customer(Connection con, String firstName, String lastName, String email, String password, String phone) {
+    public Employee(Connection con, String firstName, String lastName, String email, String password, String phone) {
         super(con, firstName, lastName, email, password, phone);
-        setEmployee(false);
+        setEmployee(true);
     }
 
     //Fetch the required user from the database
-    public Customer(Connection con, String email, String password) {
+    public Employee(Connection con, String email, String password) {
         super(con, email, password);
-        setEmployee(false);
+        setEmployee(true);
         if (isValidEntry()) {
-            queryCustomer(email, password);
+            queryEmployee(email, password);
         }
     }
 
-
     public String db_commit() {
         try {
-            pst = dbConnection().prepareStatement("Insert into Customers(FirstName, Surname, EmailAddress,Password,PhoneNumber) Values(?,?,?,?,?)");
+            pst = dbConnection().prepareStatement(
+                    "Insert into Admin(FirstName, Surname, EmailAddress,Password,PhoneNumber) Values(?,?,?,?,?)"
+            );
             pst.setString(1, getFirstName());
             pst.setString(2, getLastName());
             pst.setString(3, getEmail());
@@ -45,9 +45,9 @@ public class Customer extends Person {
         return null;
     }
 
-    public void queryCustomer(String email, String password) {
+    public Employee queryEmployee(String email, String password) {
         String query = String.format(
-                "SELECT * FROM Customers WHERE EmailAddress = '%s' and Password = '%s'", email, password
+                "SELECT * FROM Admin WHERE EmailAddress = '%s' and Password = '%s'", email, password
         );
         try {
             pst = dbConnection().prepareStatement(query);
@@ -57,14 +57,13 @@ public class Customer extends Person {
                 String firstName = result.getString("FirstName");
                 String lastName = result.getString("Surname");
                 String phone = result.getString("PhoneNumber");
-                setId(result.getString("CustomerID"));
+                setId(result.getString("AdminID"));
                 setFirstName(firstName);
                 setLastName(lastName);
                 setEmail(email);
                 setPassword(password);
                 setPhone(phone);
-                String id = getId();
-                customerAddress = new Address(con).queryAddress(id);
+
                 //user has logged in
                 setActive(true);
             } else {
@@ -75,24 +74,6 @@ public class Customer extends Person {
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-    }
-
-    public void emptyCart() {
-        //TODO: Empty cart
-    }
-
-    //public void updateCart(Item[] items) {
-    //    for (Item item : items) {
-    //        //TODO: add to items table
-    //    }
-    //}
-
-    public void purchase() {
-        //TODO: Empty cart
-    }
-
-    public String getCustomerAddress() { return customerAddress.toString(); }
-
-    public static void main(String[] args) {
+        return null;
     }
 }
