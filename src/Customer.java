@@ -144,14 +144,12 @@ public class Customer extends Person {
         customerCart.emptyCart();
     }
 
-    //public void updateCart(Item[] items) {
-    //    for (Item item : items) {
-    //        //TODO: add to items table
-    //    }
-    //}
+    public void updateCart(Item items) {
+        customerCart.updateCart(items);
+    }
 
     public void purchase() {
-        //TODO: Empty cart
+        customerCart.checkOut();
     }
 
     public String getCustomerAddress() {

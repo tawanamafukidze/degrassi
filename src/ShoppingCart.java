@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class ShoppingCart {
     private ArrayList<Item> items;
-    private int id;
+    private String id;
     private String customerID;
     private Connection db;
     private PreparedStatement pst;
@@ -27,6 +27,8 @@ public class ShoppingCart {
             } catch (SQLException throwables) {
                 throwables.printStackTrace();
             }
+        } else {
+            queryKartID();
         }
     }
 
@@ -59,7 +61,7 @@ public class ShoppingCart {
             try {
                 pst = db.prepareStatement("INSERT INTO kartline(ProductID, KartID, Quantity) Values(?,?,?)");
                 pst.setString(1, item.getProduct().getId());
-                pst.setInt(2, id);
+                pst.setString(2, id);
                 pst.setInt(3, item.getQuantity());
                 pst.executeUpdate();
                 JOptionPane.showMessageDialog(null, "Item has been added to your cart.");
@@ -109,6 +111,8 @@ public class ShoppingCart {
         StringBuilder info = new StringBuilder("" +
                 "The following item(s) have been removed from your cart due to insufficient stock:\n"
         );
+        System.out.println(outOfStock.size());
+
         for (Item item : items) {
             if (storeHasStock(item, item.getQuantity())) {
                 int newStock = item.getProduct().getStock() - item.getQuantity();
@@ -132,7 +136,18 @@ public class ShoppingCart {
             JOptionPane.showMessageDialog(null,
                     info.toString(), "Cart Status", JOptionPane.INFORMATION_MESSAGE
             );
-            for (Item item : outOfStock) { items.remove(item); }
+            for (Item item : outOfStock) {
+                query = String.format("DELETE FROM kartline WHERE kartID = '%s' AND productID = '%s'",
+                        id, item.getProduct().getId()
+                );
+                try {
+                    PreparedStatement pst = db.prepareStatement(query);
+                    pst.executeUpdate();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+                items.remove(item);
+            }
         }
 
         if (items.size() == 0) {
@@ -149,7 +164,7 @@ public class ShoppingCart {
             emptyCart();
             JOptionPane.showMessageDialog(null,
                     String.format("Order has been placed.\n" +
-                    "Current Status: processing.")
+                            "Current Status: processing.")
             );
         } else {
             JOptionPane.showMessageDialog(null,
@@ -161,18 +176,19 @@ public class ShoppingCart {
 
     public ShoppingCart queryCart() {
         String query = String.format(
-                "SELECT DISTINCT kart.KartID, kart.CustomerID, line.id, line.ProductID, line.Quantity, " +
-                        "game.Title, game.Type, game.Price, game.Stock " +
-                        "FROM karts kart inner join kartline line " +
-                        "ON line.KartID = kart.KartID AND kart.CustomerID = '%s' " +
-                        "inner join games game " +
-                        "ON line.productID = game.gameID", customerID);
+                "SELECT DISTINCT karts.KartID, CustomerID, kartline.id, kartline.ProductID, kartline.Quantity,\n" +
+                        "games.Title, games.Type, games.Price, games.Stock\n" +
+                        "FROM karts\n" +
+                        "INNER JOIN kartline\n" +
+                        "ON karts.kartID = kartline.KartID AND karts.CustomerID = '%s'\n" +
+                        "INNER JOIN games\n" +
+                        "ON kartline.productID = games.gameID", customerID);
         try {
             PreparedStatement pst = db.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
-                id = rs.getInt("kartID");
+                id = rs.getString("kartID");
                 String itemID = rs.getString("id");
                 int itemQuantity = rs.getInt("Quantity");
                 String productID = rs.getString("productID");
@@ -180,6 +196,7 @@ public class ShoppingCart {
                 String type = rs.getString("Type");
                 double price = rs.getDouble("Price");
                 int stock = rs.getInt("Stock");
+                System.out.println(title);
 
                 Item item = new Item(
                         itemID, itemQuantity, new Product(title, type, price, stock, productID)
@@ -193,6 +210,62 @@ public class ShoppingCart {
         return null;
     }
 
+    public void updateCart(Item item) {
+        boolean itemFound = false;
+        try {
+            pst = db.prepareStatement(
+                    String.format("SELECT quantity FROM kartline WHERE kartID = %s AND productID = %s"
+                            , id, item.getProduct().getId())
+            );
+            ResultSet result = pst.executeQuery();
+            while (result.next()) {
+                itemFound = true;
+                //int currentQuantity = result.getInt("quantity");
+                db.prepareStatement(String.format("UPDATE kartline " +
+                                "SET quantity = %s " +
+                                "WHERE kartID = %s AND productID = %s",
+                        item.getQuantity(), id, item.getProduct().getId())
+                ).executeUpdate();
+            }
+
+            if (!itemFound) {
+                try {
+                    PreparedStatement insertPst = db.prepareStatement(
+                            String.format("INSERT INTO kartline(productID, kartID, quantity) VALUES(?,?,?)")
+                    );
+                    insertPst.setString(1, item.getProduct().getId());
+                    insertPst.setString(2, id);
+                    insertPst.setInt(3, item.getQuantity());
+                    insertPst.executeUpdate();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    private void queryKartID() {
+        String query = String.format(
+                "SELECT * FROM karts WHERE customerID = %S", customerID);
+        try {
+            PreparedStatement pst = db.prepareStatement(query);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                id = rs.getString("kartID");
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public String getId() {
+        return id;
+    }
+
     @Override
     public String toString() {
         try {
@@ -201,7 +274,8 @@ public class ShoppingCart {
                 s.append(item.toString()).append('\n');
             }
             return s.toString();
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException ignored) {
+        }
         return "";
     }
 
@@ -209,6 +283,10 @@ public class ShoppingCart {
         Connection con = new MYSQLConnection().getDBConnection();
         ShoppingCart myCart = new ShoppingCart(con, "6");
         System.out.println(myCart.queryCart());
+        myCart.updateCart(
+                new Item("5", 3, new Product("Fifa", "sport", 200.0, 3, "12"))
+        );
+        myCart.queryCart();
         myCart.checkOut();
     }
 }
