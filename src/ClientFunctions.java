@@ -4,14 +4,52 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import java.awt.GridLayout;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.awt.GridBagLayout;
+import javax.swing.JTabbedPane;
+import java.awt.GridBagConstraints;
 import javax.swing.JLabel;
 import javax.swing.ImageIcon;
+import javax.swing.JFormattedTextField;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
+import java.awt.Color;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
+import com.mysql.jdbc.ResultSetMetaData;
+
+import javax.swing.JTextPane;
+import javax.swing.RowFilter;
 import javax.swing.JButton;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class ClientFunctions extends JFrame {
 
 	private JPanel contentPane;
+	private JTable Customers;
+	private JTable tblProducts;
+	Connection con = new DatabaseConnection().getConnection();
 
+	PreparedStatement pst;
+	DefaultTableModel tbl;
+	DefaultTableModel utbl;
+	private JTable tblKart;
+	
+	
+	
+	
+
+	
 	/**
 	 * Launch the application.
 	 */
@@ -27,31 +65,308 @@ public class ClientFunctions extends JFrame {
 			}
 		});
 	}
+	
+	public void LoadUser() {
+		
+
+		try {
+			int a;
+			pst = con.prepareStatement("select * from customers");
+			Customer customer;
+			ResultSet rs = pst.executeQuery();
+
+			ResultSetMetaData rd = (ResultSetMetaData) rs.getMetaData();
+
+			a = rd.getColumnCount();
+			utbl = (DefaultTableModel) Customers.getModel();
+			utbl.setRowCount(0);
+
+			while (rs.next()) {
+				Vector v2 = new Vector();
+				String customer_id = rs.getString("customerID");
+				customer = new Customer(con);
+				customer.queryCustomer(customer_id);
+				
+				try {
+				
+				v2.add(customer_id);
+				v2.add(customer.getFirstName());
+				v2.add(customer.getLastName());
+				v2.add(customer.getEmail());
+				v2.add(customer.getPhone());
+
+				String address = customer.getCustomerAddress().getStreet() + " " +
+						customer.getCustomerAddress().getCity() + " " + customer.getCustomerAddress().getState() + " " +
+						customer.getCustomerAddress().getPostCode();
+				v2.add(address);
+				} catch (NullPointerException ignored) {}
+		
+				utbl.addRow(v2);
+			}
+		} catch (SQLException ex) {
+			Logger.getLogger(AdminSearch.class.getName()).isLoggable(Level.SEVERE);
+		}
+		}
+	
+	public void loadGames() {
+		try {
+			int a;
+			pst = con.prepareStatement("select * from games");
+
+			ResultSet rs = pst.executeQuery();
+
+			ResultSetMetaData rd = (ResultSetMetaData) rs.getMetaData();
+
+			a = rd.getColumnCount();
+
+			tbl = (DefaultTableModel) tblProducts.getModel();
+			tbl.setRowCount(0);
+
+			while (rs.next()) {
+				Vector v2 = new Vector();
+				
+				v2.add(rs.getString("Title"));
+				v2.add(rs.getString("Type"));
+				v2.add(rs.getString("Stock"));
+				v2.add(rs.getString("Price"));
+				System.out.println(v2.toString());
+				tbl.addRow(v2.toArray());
+			}
+		} catch (SQLException ex) {
+			Logger.getLogger(AdminSearch.class.getName()).isLoggable(Level.SEVERE);
+		}
+	}
+				
+		
+			
 
 	/**
 	 * Create the frame.
 	 */
 	public ClientFunctions() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 685, 594);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(null);
+		GridBagLayout gbl_contentPane = new GridBagLayout();
+		gbl_contentPane.columnWidths = new int[]{0, 0};
+		gbl_contentPane.rowHeights = new int[]{0, 0};
+		gbl_contentPane.columnWeights = new double[]{1.0, Double.MIN_VALUE};
+		gbl_contentPane.rowWeights = new double[]{1.0, Double.MIN_VALUE};
+		contentPane.setLayout(gbl_contentPane);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		GridBagConstraints gbc_tabbedPane = new GridBagConstraints();
+		gbc_tabbedPane.fill = GridBagConstraints.BOTH;
+		gbc_tabbedPane.gridx = 0;
+		gbc_tabbedPane.gridy = 0;
+		contentPane.add(tabbedPane, gbc_tabbedPane);
+		
+		JPanel panel = new JPanel();
+		tabbedPane.addTab("", new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\shop.png"), panel, null);
+		tabbedPane.setBackgroundAt(0, Color.BLACK);
+		panel.setLayout(null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setBounds(146, 110, 361, 295);
+		panel.add(scrollPane);
+		
+		tblProducts = new JTable();
+		tblProducts.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null},
+			},
+			new String[] {
+				"Title", "Type", "Stock", "Price"
+			}
+		));
+		scrollPane.setViewportView(tblProducts);
+		
+		
+		
+		JFormattedTextField txtSearchGames = new JFormattedTextField();
+		txtSearchGames.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				DefaultTableModel filteredTable = (DefaultTableModel)tblProducts.getModel();
+				String search = "(?i)"+"^"+txtSearchGames.getText();
+				System.out.println(search);
+				TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(filteredTable);
+				tblProducts.setRowSorter(tr);
+				tr.setRowFilter(RowFilter.regexFilter(search));
+				System.out.println(tr.getRowFilter());
+			}
+		});
+		txtSearchGames.setBounds(146, 78, 361, 20);
+		panel.add(txtSearchGames);
+		
+		JLabel lblNewLabel_2 = new JLabel("New label");
+		lblNewLabel_2.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\search.png"));
+		lblNewLabel_2.setBounds(56, 81, 76, 14);
+		panel.add(lblNewLabel_2);
 		
 		JLabel lblNewLabel_1 = new JLabel("");
-		lblNewLabel_1.setIcon(new ImageIcon("img\\heading3.png"));
-		lblNewLabel_1.setBounds(35, 26, 373, 47);
-		contentPane.add(lblNewLabel_1);
+		lblNewLabel_1.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\heading3.png"));
+		lblNewLabel_1.setBounds(146, 11, 385, 59);
+		panel.add(lblNewLabel_1);
+		
+		JButton addtokart = new JButton("add to kart");
+		addtokart.setBounds(146, 431, 177, 23);
+		panel.add(addtokart);
+		
+		JLabel BackgroundShop = new JLabel("New label");
+		BackgroundShop.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\ps4 wall.png"));
+		BackgroundShop.setBounds(-190, -64, 909, 631);
+		panel.add(BackgroundShop);
+		
+		JPanel panel_1 = new JPanel();
+		tabbedPane.addTab("", new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\profile.png"), panel_1, null);
+		tabbedPane.setForegroundAt(1, Color.BLACK);
+		tabbedPane.setBackgroundAt(1, Color.BLACK);
+		panel_1.setLayout(null);
+		
+		JButton btnNewButton = new JButton("Edit");
+		btnNewButton.setBounds(10, 432, 89, 23);
+		panel_1.add(btnNewButton);
+		
+		JFormattedTextField txtPostalCode = new JFormattedTextField();
+		txtPostalCode.setBounds(146, 402, 122, 20);
+		panel_1.add(txtPostalCode);
+		
+		JLabel lblNewLabel_3 = new JLabel("");
+		lblNewLabel_3.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\postalcode.png"));
+		lblNewLabel_3.setBounds(10, 407, 105, 14);
+		panel_1.add(lblNewLabel_3);
+		
+		JFormattedTextField formattedTextField_2 = new JFormattedTextField();
+		formattedTextField_2.setBounds(143, 371, 122, 20);
+		panel_1.add(formattedTextField_2);
+		
+		JLabel StreetLabel = new JLabel("");
+		StreetLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\Street.png"));
+		StreetLabel.setBounds(10, 371, 59, 14);
+		panel_1.add(StreetLabel);
+		
+		JFormattedTextField formattedTextField_1 = new JFormattedTextField();
+		formattedTextField_1.setBounds(143, 337, 122, 20);
+		panel_1.add(formattedTextField_1);
+		
+		JLabel txtCity = new JLabel("New label");
+		txtCity.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\city.png"));
+		txtCity.setBounds(10, 340, 46, 14);
+		panel_1.add(txtCity);
+		
+		JFormattedTextField txtStateCode = new JFormattedTextField();
+		txtStateCode.setBounds(143, 298, 122, 20);
+		panel_1.add(txtStateCode);
+		
+		JLabel StateLabel = new JLabel("");
+		StateLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\statecode2.png"));
+		StateLabel.setBounds(10, 304, 93, 14);
+		panel_1.add(StateLabel);
+		
+		JFormattedTextField txtPhoneNumber = new JFormattedTextField();
+		txtPhoneNumber.setBounds(143, 264, 122, 20);
+		panel_1.add(txtPhoneNumber);
+		
+		JLabel PhoneNumberLabel = new JLabel("");
+		PhoneNumberLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\phonenumber.png"));
+		PhoneNumberLabel.setBounds(10, 264, 112, 14);
+		panel_1.add(PhoneNumberLabel);
+		
+		JFormattedTextField txtEmailAddress = new JFormattedTextField();
+		txtEmailAddress.setBounds(143, 217, 122, 20);
+		panel_1.add(txtEmailAddress);
+		
+		JLabel EmailAddressLabel = new JLabel("");
+		EmailAddressLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\emailupdate.png"));
+		EmailAddressLabel.setBounds(10, 223, 112, 14);
+		panel_1.add(EmailAddressLabel);
+		
+		JFormattedTextField txtSurname = new JFormattedTextField();
+		txtSurname.setBounds(143, 175, 122, 22);
+		panel_1.add(txtSurname);
+		
+		JLabel SurnameLabel = new JLabel("");
+		SurnameLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\surname.png"));
+		SurnameLabel.setBounds(10, 175, 93, 22);
+		panel_1.add(SurnameLabel);
+		
+		JTextPane txtFirstName = new JTextPane();
+		txtFirstName.setBounds(143, 129, 122, 20);
+		panel_1.add(txtFirstName);
+		
+		JLabel FirstNameLabel = new JLabel("");
+		FirstNameLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\firstname.png"));
+		FirstNameLabel.setBounds(10, 129, 93, 22);
+		panel_1.add(FirstNameLabel);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.setBounds(274, 129, 370, 43);
+		panel_1.add(scrollPane_1);
+		
+		Customers = new JTable();
+		Customers.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null, null, null},
+			},
+			new String[] {
+				"ID", "FirstName", "Surname", "Email Address", "Phone Number", "Address"
+			}
+		));
+		scrollPane_1.setViewportView(Customers);
+		
+		JLabel DegrassiMyInfo = new JLabel("");
+		DegrassiMyInfo.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\heading3.png"));
+		DegrassiMyInfo.setBounds(143, 11, 370, 63);
+		panel_1.add(DegrassiMyInfo);
 		
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon("img\\resize-1598019257675522578ps4wall.png"));
-		lblNewLabel.setBounds(0, 0, 434, 261);
-		contentPane.add(lblNewLabel);
+		lblNewLabel.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\ps4 wall.png"));
+		lblNewLabel.setBounds(-191, -25, 957, 570);
+		panel_1.add(lblNewLabel);
 		
-		JButton btnNewButton = new JButton("");
-		btnNewButton.setBounds(35, 183, 89, 23);
-		contentPane.add(btnNewButton);
+		JPanel panel_2 = new JPanel();
+		tabbedPane.addTab("", new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\checkout.png"), panel_2, null);
+		tabbedPane.setForegroundAt(2, Color.BLACK);
+		tabbedPane.setBackgroundAt(2, Color.BLACK);
+		panel_2.setLayout(null);
+		
+		JLabel kartDegrassi = new JLabel("");
+		kartDegrassi.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\heading3.png"));
+		kartDegrassi.setBounds(149, 26, 373, 53);
+		panel_2.add(kartDegrassi);
+		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		scrollPane_2.setBounds(85, 107, 523, 139);
+		panel_2.add(scrollPane_2);
+		
+		tblKart = new JTable();
+		tblKart.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null},
+			},
+			new String[] {
+				"Title", "Quantity", "Price"
+			}
+		));
+		scrollPane_2.setViewportView(tblKart);
+		
+		JButton deletebtn = new JButton("Delete");
+		deletebtn.setBounds(85, 326, 89, 23);
+		panel_2.add(deletebtn);
+		
+		JButton orderbtn = new JButton("Order");
+		orderbtn.setBounds(205, 326, 89, 23);
+		panel_2.add(orderbtn);
+		
+		JLabel kartBackground = new JLabel("");
+		kartBackground.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\ps4 wall.png"));
+		kartBackground.setBounds(-190, 0, 844, 544);
+		panel_2.add(kartBackground);
+		
+		LoadUser();
+		loadGames();
 	}
-
 }

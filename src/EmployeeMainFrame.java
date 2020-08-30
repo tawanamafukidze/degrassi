@@ -28,7 +28,7 @@ public class EmployeeMainFrame extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					EmployeeMainFrame frame = new EmployeeMainFrame(DatabaseConnection);
+					EmployeeMainFrame frame = new EmployeeMainFrame(new DatabaseConnection());
 					frame.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -48,7 +48,7 @@ public class EmployeeMainFrame extends JFrame {
 		
 	
 	public EmployeeMainFrame(DatabaseConnection con) {
-		 this.con = con; 
+		 this.con = con.getConnection();
 	
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

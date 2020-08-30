@@ -140,6 +140,8 @@ public class SignUp extends JFrame {
 		JButton realnxtbtn = new JButton("");
 		realnxtbtn.addActionListener(new ActionListener() {
 			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				
+				
 
 				try {
 					
@@ -201,7 +203,8 @@ public class SignUp extends JFrame {
 			
 					
 				
-				
+				ClientMainFrame c = new ClientMainFrame();
+				c.setVisible(true);
 			}
 		});
 		realnxtbtn.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\degrassi_repo\\DEGRASSI\\img\\nxt4.png"));
