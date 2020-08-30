@@ -68,12 +68,44 @@ public class Employee extends Person {
                 //user has logged in
                 setActive(true);
             } else {
-                JOptionPane.showMessageDialog(this,
+                JOptionPane.showMessageDialog(new MainFrame(),
                         "User Not Found: Please check the email and password provided."
                 );
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    public boolean shipOrder(String orderID) {
+        try {
+            PreparedStatement pst = dbConnection().prepareStatement(String.format("UPDATE customer_orders" +
+                    "SET status = 'shipping' WHERE orderID = '%s'", orderID)
+            );
+            pst.executeQuery();
+            JOptionPane.showMessageDialog(null, "Order status has been set to shipping.",
+                    "Order Status", JOptionPane.INFORMATION_MESSAGE
+            );
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean confirmShipment(String orderID) {
+        try {
+            PreparedStatement pst = dbConnection().prepareStatement(String.format("UPDATE customer_orders" +
+                    "SET status = 'shipped' WHERE orderID = '%s'", orderID)
+            );
+            pst.executeQuery();
+            JOptionPane.showMessageDialog(null, "Order status has been set to shipped.",
+                    "Order Status", JOptionPane.INFORMATION_MESSAGE
+            );
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 }

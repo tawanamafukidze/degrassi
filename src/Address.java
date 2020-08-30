@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class Address extends MainFrame {
+public class Address {
     private String street;
     private String state;
     private String city;
@@ -16,7 +16,7 @@ public class Address extends MainFrame {
         db = con;
         if (FieldLengthInvalid(street, 1, 100)) {
             if (street.length() < 1) {
-                JOptionPane.showMessageDialog(this,
+                JOptionPane.showMessageDialog(new MainFrame(),
                         "Provided an invalid Street. \n" +
                                 " First Name must be at least 1 character long and not more than 100 characters long.");
                 return;
@@ -24,21 +24,21 @@ public class Address extends MainFrame {
         }
 
         if (FieldLengthInvalid(city, 1, 100)) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(new MainFrame(),
                     "Provided an invalid City. \n" +
                             " First Name must be at least 1 character long and not more than 100 characters long.");
             return;
         }
 
         if (FieldLengthInvalid(state, 1, 100)) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(new MainFrame(),
                     "Provided an invalid State. \n" +
                             " First Name must be at least 1 character long and not more than 100 characters long.");
             return;
         }
 
         if (FieldLengthInvalid(postCode, 3, 5)) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(new MainFrame(),
                     "Provided an invalid Postal Code. \n" +
                             " First Name must be at least 3 characters long and not more than 5 characters long.");
             return;
@@ -76,7 +76,7 @@ public class Address extends MainFrame {
 
     public void db_commit(String customer_id) {
         if (FieldLengthInvalid(customer_id, 1, Integer.MAX_VALUE)) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(new MainFrame(),
                     "Internal Error: Address has no Customer ID associated with it."
             );
             return;

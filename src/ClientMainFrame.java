@@ -83,6 +83,7 @@ public class ClientMainFrame extends JFrame {
                 if (customer.Active()) {
                     System.out.println(customer.toString());
                     System.out.println(customer.getCustomerAddress());
+                    System.out.println(customer.getShoppingCart().toString());
                 }
             }
         });

@@ -46,7 +46,7 @@ public class MainFrame extends JFrame {
 	}
 
 	//default constructor for extending classes
-	public MainFrame() {}
+	public MainFrame() {dispose();}
 
 	private void getWidgets() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

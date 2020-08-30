@@ -4,7 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public abstract class Person extends MainFrame {
+public abstract class Person {
     private String id;
     private String firstName;
     private String lastName;
@@ -19,47 +19,47 @@ public abstract class Person extends MainFrame {
     public Person(Connection con, String firstName, String lastName, String email, String password, String phone) {
         db = con; //get the mysql connection instance
         if (FieldLengthInvalid(firstName, 1, 30)) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(new MainFrame(),
                     "Provided an invalid first name. \n" +
                             " First Name must be at least 1 character long and not more than 30 characters long.");
             return;
         }
 
         if (FieldLengthInvalid(lastName, 1, 50)) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(new MainFrame(),
                     "Provided an invalid last name. \n" +
                             " First Name must be at least 1 character long and not more than 50 characters long.");
             return;
         }
 
         if (emailInvalid(email)) {
-            JOptionPane.showMessageDialog(this, "Provided an invalid email address. \n");
+            JOptionPane.showMessageDialog(new MainFrame(), "Provided an invalid email address. \n");
             return;
         }
 
         if (!emailUnique(email)) {
-            JOptionPane.showMessageDialog(this, "Email address provided is already in use.");
+            JOptionPane.showMessageDialog(new MainFrame(), "Email address provided is already in use.");
             return;
         }
 
         if (FieldLengthInvalid(password, 1, 120)) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(new MainFrame(),
                     "Password must be at least 1 character long.");
             return;
         }
 
         if (phoneNumberInvalid(phone)) {
-            JOptionPane.showMessageDialog(this, "Provided an invalid phone number. \n" +
+            JOptionPane.showMessageDialog(new MainFrame(), "Provided an invalid phone number. \n" +
                     "Phone number cannot contain non digit characters.");
             return;
         }
 
         if (FieldLengthInvalid(phone, 10, 10)) {
             if (phone.length() < 10) {
-                JOptionPane.showMessageDialog(this,
+                JOptionPane.showMessageDialog(new MainFrame(),
                         "Phone number provided is too short.");
             } else {
-                JOptionPane.showMessageDialog(this, "Phone number provided is too long.");
+                JOptionPane.showMessageDialog(new MainFrame(), "Phone number provided is too long.");
             }
             return;
         }
@@ -78,16 +78,20 @@ public abstract class Person extends MainFrame {
         //check if email is correctly formatted
         if (emailInvalid(email)) {
             //Email is Not Valid.
-            JOptionPane.showMessageDialog(this, "Provided an invalid email address. \n");
+            JOptionPane.showMessageDialog(new MainFrame(), "Provided an invalid email address. \n");
             return;
         }
 
         if (FieldLengthInvalid(password, 1, 120)) {
-            JOptionPane.showMessageDialog(this,
+            JOptionPane.showMessageDialog(new MainFrame(),
                     "Password must be at least 1 character long.");
             return;
         }
         isValidEntry = true;
+    }
+
+    public Person(Connection con) {
+        db = con;
     }
 
     //checks if provided field is within the input limit and returns true, otherwise false.

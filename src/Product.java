@@ -1,14 +1,68 @@
-public class Product extends MainFrame{
-    private String id;
-    private String name;
-    private String type;
-    private float price;
-    private int Stock;
+import javax.swing.*;
 
-    public Product(String name, String type, String price, int stock) {
-        if (name.length() < 1) {
-            //TODO: CODE
-            ;
+public class Product {
+    private String id;
+    private String title;
+    private String type;
+    private double price;
+    private int stock;
+
+    public Product(String title, String type, double price, int stock, String id) {
+        this.title = title;
+        this.type = type;
+        this.price = price;
+        this.stock = stock;
+        this.id = id;
+    }
+
+    public int getStock() {
+        return stock;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public String getProductTitle() {
+        return title;
+    }
+
+    public String getProductType() {
+        return type;
+    }
+
+    public void addStock(int n) {
+        if (n > 0 && n+stock < Integer.MAX_VALUE) {
+            stock += n;
+        } else {
+            JOptionPane.showMessageDialog(new MainFrame(), "Please enter a valid stock amount.");
         }
+    }
+
+    /*
+    @Override
+    public String toString() {
+        return String.format("Product" +
+                "id: %s \n" +
+                "title: %s \n" +
+                "type: %s \n" +
+                "price: %s \n" +
+                "stock: %s \n", id, title, type, price, stock);
+    }
+    */
+
+    @Override
+    public String toString() {
+        return "Product{" +
+                "id='" + id + '\'' +
+                ", title='" + title + '\'' +
+                ", type='" + type + '\'' +
+                ", price=" + price +
+                ", stock=" + stock +
+                '}';
     }
 }
