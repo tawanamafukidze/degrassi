@@ -32,6 +32,10 @@ import javax.swing.RowFilter;
 import javax.swing.JButton;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 
 public class ClientFunctions extends JFrame {
 
@@ -168,11 +172,17 @@ public class ClientFunctions extends JFrame {
 		tabbedPane.setBackgroundAt(0, Color.BLACK);
 		panel.setLayout(null);
 		
+		JLabel lblNewLabel_4 = new JLabel("");
+		lblNewLabel_4.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\quantity.png"));
+		lblNewLabel_4.setBounds(146, 417, 76, 14);
+		panel.add(lblNewLabel_4);
+		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds(146, 110, 361, 295);
 		panel.add(scrollPane);
 		
 		tblProducts = new JTable();
+		
 		tblProducts.setModel(new DefaultTableModel(
 			new Object[][] {
 				{null, null, null, null},
@@ -201,6 +211,11 @@ public class ClientFunctions extends JFrame {
 		txtSearchGames.setBounds(146, 78, 361, 20);
 		panel.add(txtSearchGames);
 		
+		JSpinner spinner = new JSpinner();
+		spinner.setModel(new SpinnerNumberModel(new Integer(1), new Integer(1), null, new Integer(1)));
+		spinner.setBounds(293, 416, 30, 20);
+		panel.add(spinner);
+		
 		JLabel lblNewLabel_2 = new JLabel("New label");
 		lblNewLabel_2.setIcon(new ImageIcon("C:\\Users\\tawan\\git\\DEGRASSI_repo\\DEGRASSI\\img\\search.png"));
 		lblNewLabel_2.setBounds(56, 81, 76, 14);
@@ -212,7 +227,7 @@ public class ClientFunctions extends JFrame {
 		panel.add(lblNewLabel_1);
 		
 		JButton addtokart = new JButton("add to kart");
-		addtokart.setBounds(146, 431, 177, 23);
+		addtokart.setBounds(146, 442, 177, 23);
 		panel.add(addtokart);
 		
 		JLabel BackgroundShop = new JLabel("New label");
@@ -303,7 +318,7 @@ public class ClientFunctions extends JFrame {
 		panel_1.add(FirstNameLabel);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
-		scrollPane_1.setBounds(274, 129, 370, 43);
+		scrollPane_1.setBounds(274, 129, 370, 40);
 		panel_1.add(scrollPane_1);
 		
 		Customers = new JTable();

@@ -229,11 +229,11 @@ public class AdminSearch extends JFrame {
 		Update.add(txtTitle);
 		
 		JTextPane txtPrice = new JTextPane();
-		txtPrice.setBounds(101, 297, 86, 14);
+		txtPrice.setBounds(101, 288, 86, 23);
 		Update.add(txtPrice);
 		
 		JTextPane txtStock = new JTextPane();
-		txtStock.setBounds(101, 245, 86, 14);
+		txtStock.setBounds(101, 236, 86, 23);
 		Update.add(txtStock);
 		
 		JTextPane txtType = new JTextPane();
