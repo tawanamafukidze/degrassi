@@ -9,14 +9,14 @@ public class Address {
     private String state;
     private String city;
     private String postCode;
-    private Connection db;
+    private final Connection db;
     private boolean validEntry = false;
 
     public Address(Connection con, String street, String state, String city, String postCode) {
         db = con;
         if (FieldLengthInvalid(street, 1, 100)) {
             if (street.length() < 1) {
-                JOptionPane.showMessageDialog(new MainFrame(),
+                JOptionPane.showMessageDialog(null,
                         "Provided an invalid Street. \n" +
                                 " First Name must be at least 1 character long and not more than 100 characters long.");
                 return;
@@ -24,21 +24,21 @@ public class Address {
         }
 
         if (FieldLengthInvalid(city, 1, 100)) {
-            JOptionPane.showMessageDialog(new MainFrame(),
+            JOptionPane.showMessageDialog(null,
                     "Provided an invalid City. \n" +
                             " First Name must be at least 1 character long and not more than 100 characters long.");
             return;
         }
 
         if (FieldLengthInvalid(state, 1, 100)) {
-            JOptionPane.showMessageDialog(new MainFrame(),
+            JOptionPane.showMessageDialog(null,
                     "Provided an invalid State. \n" +
                             " First Name must be at least 1 character long and not more than 100 characters long.");
             return;
         }
 
         if (FieldLengthInvalid(postCode, 3, 5)) {
-            JOptionPane.showMessageDialog(new MainFrame(),
+            JOptionPane.showMessageDialog(null,
                     "Provided an invalid Postal Code. \n" +
                             " First Name must be at least 3 characters long and not more than 5 characters long.");
             return;
@@ -76,7 +76,7 @@ public class Address {
 
     public void db_commit(String customer_id) {
         if (FieldLengthInvalid(customer_id, 1, Integer.MAX_VALUE)) {
-            JOptionPane.showMessageDialog(new MainFrame(),
+            JOptionPane.showMessageDialog(null,
                     "Internal Error: Address has no Customer ID associated with it."
             );
             return;
@@ -98,16 +98,32 @@ public class Address {
     }
 
     //checks if provided field is within the input limit and returns true, otherwise false.
+    public boolean isValidEntry() {
+        return validEntry;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public String getPostCode() {
+        return postCode;
+    }
+
     private boolean FieldLengthInvalid(String field, int minLength, int maxLength) {
         if (field == null) {
             return true;
         }
         int fieldLength = field.length();
         return fieldLength < minLength || fieldLength > maxLength;
-    }
-
-    public boolean isValidEntry() {
-        return validEntry;
     }
 
     @Override

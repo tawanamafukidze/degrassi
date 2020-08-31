@@ -1,3 +1,4 @@
+import javax.print.DocFlavor;
 import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,47 +20,47 @@ public abstract class Person {
     public Person(Connection con, String firstName, String lastName, String email, String password, String phone) {
         db = con; //get the mysql connection instance
         if (FieldLengthInvalid(firstName, 1, 30)) {
-            JOptionPane.showMessageDialog(new MainFrame(),
+            JOptionPane.showMessageDialog(null,
                     "Provided an invalid first name. \n" +
                             " First Name must be at least 1 character long and not more than 30 characters long.");
             return;
         }
 
         if (FieldLengthInvalid(lastName, 1, 50)) {
-            JOptionPane.showMessageDialog(new MainFrame(),
+            JOptionPane.showMessageDialog(null,
                     "Provided an invalid last name. \n" +
                             " First Name must be at least 1 character long and not more than 50 characters long.");
             return;
         }
 
         if (emailInvalid(email)) {
-            JOptionPane.showMessageDialog(new MainFrame(), "Provided an invalid email address. \n");
+            JOptionPane.showMessageDialog(null, "Provided an invalid email address. \n");
             return;
         }
 
         if (!emailUnique(email)) {
-            JOptionPane.showMessageDialog(new MainFrame(), "Email address provided is already in use.");
+            JOptionPane.showMessageDialog(null, "Email address provided is already in use.");
             return;
         }
 
         if (FieldLengthInvalid(password, 1, 120)) {
-            JOptionPane.showMessageDialog(new MainFrame(),
+            JOptionPane.showMessageDialog(null,
                     "Password must be at least 1 character long.");
             return;
         }
 
         if (phoneNumberInvalid(phone)) {
-            JOptionPane.showMessageDialog(new MainFrame(), "Provided an invalid phone number. \n" +
+            JOptionPane.showMessageDialog(null, "Provided an invalid phone number. \n" +
                     "Phone number cannot contain non digit characters.");
             return;
         }
 
         if (FieldLengthInvalid(phone, 10, 10)) {
             if (phone.length() < 10) {
-                JOptionPane.showMessageDialog(new MainFrame(),
+                JOptionPane.showMessageDialog(null,
                         "Phone number provided is too short.");
             } else {
-                JOptionPane.showMessageDialog(new MainFrame(), "Phone number provided is too long.");
+                JOptionPane.showMessageDialog(null, "Phone number provided is too long.");
             }
             return;
         }
@@ -78,12 +79,12 @@ public abstract class Person {
         //check if email is correctly formatted
         if (emailInvalid(email)) {
             //Email is Not Valid.
-            JOptionPane.showMessageDialog(new MainFrame(), "Provided an invalid email address. \n");
+            JOptionPane.showMessageDialog(null, "Provided an invalid email address. \n");
             return;
         }
 
         if (FieldLengthInvalid(password, 1, 120)) {
-            JOptionPane.showMessageDialog(new MainFrame(),
+            JOptionPane.showMessageDialog(null,
                     "Password must be at least 1 character long.");
             return;
         }
@@ -133,16 +134,12 @@ public abstract class Person {
         }
     }
 
-    public boolean checkPassword(String userPass) {
-        return password.equals(userPass);
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
     protected Connection dbConnection() {
         return db;
+    }
+
+    public boolean checkPassword(String userPass) {
+        return password.equals(userPass);
     }
 
     protected void setFirstName(String firstName) {
@@ -163,6 +160,10 @@ public abstract class Person {
 
     protected void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
     }
 
     protected String getPassword() {

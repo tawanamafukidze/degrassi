@@ -1,15 +1,10 @@
-import jdk.nashorn.internal.scripts.JO;
-
 import javax.swing.JOptionPane;
 import java.sql.Connection;
-import java.sql.DriverManager;;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class MYSQLConnection {
-
     private Connection con;
-    private JOptionPane dialog;
-
     public MYSQLConnection() { //Using the method Connect() to connect to the database automatically without the need to use the method in every class
         connect();
     }
@@ -40,10 +35,6 @@ public class MYSQLConnection {
                     "Dependency Error", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
-        JOptionPane.showMessageDialog(
-                null, "Status: Connection Successful", "Server Connection",
-                JOptionPane.INFORMATION_MESSAGE
-        );
         System.out.println("Connection Successful");
     }
 

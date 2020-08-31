@@ -1,17 +1,16 @@
-import javax.swing.*;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Order {
-    private String customerID;
+    private final String customerID;
     private String orderID;
     private String orderDate;
     private String status;
     private ArrayList<Product> products;
 
     private double sum;
-    private Connection db;
+    private final Connection db;
     private Invoice invoice;
 
     private PreparedStatement pst;
@@ -35,7 +34,7 @@ public class Order {
         this.status = status;
         this.products = products;
         this.sum = sum;
-        invoice = new Invoice(this);
+        //invoice = new Invoice(this);
     }
 
     public boolean addNewOrder(ArrayList<Item> items) {
@@ -44,7 +43,7 @@ public class Order {
             //create new customer order relationship
             pst = db.prepareStatement("INSERT INTO customer_orders(customerID, status) VALUES (?,?)");
             pst.setString(1, customerID);
-            pst.setString(2, "processing");
+            pst.setString(2, "shipped");
             pst.executeUpdate();
 
             //fetch the id of the new order relationship
@@ -59,6 +58,7 @@ public class Order {
             System.out.println(orderID);
             //add items to orders table with the fetched orderID
             for (Item item : items) {
+                products.add(item.getProduct());
                 pst = db.prepareStatement(
                         "INSERT INTO orders(orderID, customerID, productID, quantity, orderDate) " +
                                 "VALUES (?,?,?,?,?)"
@@ -70,6 +70,7 @@ public class Order {
                 pst.setString(5, orderDate);
                 pst.executeUpdate();
             }
+            invoice = new Invoice(new Order(db, customerID, orderID, orderDate, products, sum, status));
             return true;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -132,6 +133,7 @@ public class Order {
         return null;
     }
 
+    /*
     public boolean cancelOrder() {
         try {
             if (status.equals("processing")) {
@@ -156,6 +158,7 @@ public class Order {
         );
         return false;
     }
+     */
 
     public String getOrderID() {
         return orderID;
@@ -175,7 +178,7 @@ public class Order {
                     String.format("SELECT * FROM customer_orders WHERE orderID = '%s'", id)
             );
             ResultSet result = pst.executeQuery();
-            while (result.next()) {
+            if (result.next()) {
                 status = result.getString("status");
                 return status;
             }

@@ -1,6 +1,4 @@
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -9,63 +7,35 @@ import javax.swing.JOptionPane;
 import javax.swing.ImageIcon;
 import javax.swing.JFormattedTextField;
 import javax.swing.JButton;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
 
 public class SignUp extends JFrame {
 
     private JPanel contentPane;
-    private JPasswordField txtPassword;
-    private JPasswordField txtRePassword;
+    private final JPasswordField txtPassword;
+    private final JPasswordField txtRePassword;
 
     /**
      * Launch the application.
      */
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    SignUp frame = new SignUp();
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        EventQueue.invokeLater(() -> {
+            try {
+                SignUp frame = new SignUp();
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
 
     Connection con;
-    PreparedStatement pst;
-
-    public void connect() {
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            try {
-                con = DriverManager.getConnection("jdbc:mysql://192.168.1.48/degrassi", "root", "Aaronstone07");
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
 
     /**
      * Create the frame.
      */
     public SignUp() {
-
-        connect();
-
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 592, 665);
         contentPane = new JPanel();
@@ -74,12 +44,10 @@ public class SignUp extends JFrame {
         contentPane.setLayout(null);
 
         JButton btnNewButton = new JButton();
-        btnNewButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                ClientMainFrame c = new ClientMainFrame(con);
-                c.setVisible(true);
-            }
+        btnNewButton.addActionListener(e -> {
+            dispose();
+            ClientMainFrame c = new ClientMainFrame(con);
+            c.setVisible(true);
         });
 
         JFormattedTextField txtPostalCode = new JFormattedTextField();
@@ -151,52 +119,49 @@ public class SignUp extends JFrame {
         btnNewButton.setBounds(28, 521, 89, 23);
         contentPane.add(btnNewButton);
 
-        JButton realnxtbtn = new JButton();
-        realnxtbtn.addActionListener(new ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
+        JButton nxtBtn = new JButton();
+        nxtBtn.addActionListener(e -> {
+            String FirstName = txtFirstName.getText();
+            String Surname = txtSurname.getText();
+            String EmailAddress = txtEmailAddress.getText();
+            String Password = String.valueOf(txtPassword.getPassword());
+            String RePassword = String.valueOf(txtRePassword.getPassword());
+            String PhoneNumber = txtPhoneNumber.getText();
+            Customer newCustomer = new Customer(con, FirstName, Surname,
+                    EmailAddress, Password, PhoneNumber
+            );
 
-                String FirstName = txtFirstName.getText();
-                String Surname = txtSurname.getText();
-                String EmailAddress = txtEmailAddress.getText();
-                String Password = txtPassword.getText();
-                String RePassword = txtRePassword.getText();
-                String PhoneNumber = txtPhoneNumber.getText();
-                Customer newCustomer = new Customer(con, FirstName, Surname,
-                        EmailAddress, Password, PhoneNumber
-                );
+            String State = txtState.getText();
+            String City = txtCity.getText();
+            String PostalCode = txtPostalCode.getText();
+            String Street = txtStreet.getText();
 
-                String State = txtState.getText();
-                String City = txtCity.getText();
-                String PostalCode = txtPostalCode.getText();
-                String Street = txtStreet.getText();
+            if (newCustomer.isValidEntry()) {
+                if (newCustomer.checkPassword(RePassword)) {
+                    Address newAddress = new Address(con, Street, City, State, PostalCode);
 
-                if (newCustomer.isValidEntry()) {
-                    if (newCustomer.checkPassword(RePassword)) {
-                        Address newAddress = new Address(con, Street, City, State, PostalCode);
-
-                        if (newAddress.isValidEntry()) {
-                            String customerID = newCustomer.db_commit();
-                            //Don't Insert data into address table if no customerID was given (error during user creation)
-                            if (customerID != null) {
-                                newAddress.db_commit(customerID);
-                                dispose();
-                                new ClientMainFrame(con).setVisible(true);
-                            } else {
-                                JOptionPane.showMessageDialog(
-                                        contentPane, "Internal Error: User was not created. \n Please try again..."
-                                );
-                            }
+                    if (newAddress.isValidEntry()) {
+                        String customerID = newCustomer.db_commit();
+                        //Don't Insert data into address table if no customerID was given (error during user creation)
+                        if (customerID != null) {
+                            newAddress.db_commit(customerID);
+                            dispose();
+                            new ClientMainFrame(con).setVisible(true);
+                        } else {
+                            JOptionPane.showMessageDialog(
+                                    contentPane, "Internal Error: User was not created. \n Please try again..."
+                            );
                         }
-                    } else {
-                        JOptionPane.showMessageDialog(txtPassword, "Password entered does not match.");
                     }
+                } else {
+                    JOptionPane.showMessageDialog(txtPassword, "Password entered does not match.");
                 }
-
             }
+
         });
-        realnxtbtn.setIcon(new ImageIcon("img\\nxt4.png"));
-        realnxtbtn.setBounds(353, 514, 79, 23);
-        contentPane.add(realnxtbtn);
+        nxtBtn.setIcon(new ImageIcon("img\\nxt4.png"));
+        nxtBtn.setBounds(353, 514, 79, 23);
+        contentPane.add(nxtBtn);
 
         JLabel degrassi = new JLabel();
         degrassi.setIcon(new ImageIcon("img\\heading3.png"));

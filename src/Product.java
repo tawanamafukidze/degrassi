@@ -35,14 +35,6 @@ public class Product {
         return type;
     }
 
-    public void addStock(int n) {
-        if (n > 0 && n+stock < Integer.MAX_VALUE) {
-            stock += n;
-        } else {
-            JOptionPane.showMessageDialog(new MainFrame(), "Please enter a valid stock amount.");
-        }
-    }
-
     /*
     @Override
     public String toString() {

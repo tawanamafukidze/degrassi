@@ -8,8 +8,8 @@ import java.util.ArrayList;
 public class ShoppingCart {
     private ArrayList<Item> items;
     private String id;
-    private String customerID;
-    private Connection db;
+    private final String customerID;
+    private final Connection db;
     private PreparedStatement pst;
     private String query;
 
@@ -19,7 +19,7 @@ public class ShoppingCart {
         items = new ArrayList<>();
         //create cart if not found
         if (!customerHasCart(customerID)) {
-            query = String.format("INSERT INTO karts(CustomerID) VALUES (?)");
+            query = "INSERT INTO karts(CustomerID) VALUES (?)";
             try {
                 pst = db.prepareStatement(query);
                 pst.setString(1, customerID);
@@ -111,7 +111,6 @@ public class ShoppingCart {
         StringBuilder info = new StringBuilder("" +
                 "The following item(s) have been removed from your cart due to insufficient stock:\n"
         );
-        System.out.println(outOfStock.size());
 
         for (Item item : items) {
             if (storeHasStock(item, item.getQuantity())) {
@@ -163,8 +162,8 @@ public class ShoppingCart {
         if (orderPlaced) {
             emptyCart();
             JOptionPane.showMessageDialog(null,
-                    String.format("Order has been placed.\n" +
-                            "Current Status: processing.")
+                    "Order has been placed.\n" +
+                            "Current Status: processing."
             );
         } else {
             JOptionPane.showMessageDialog(null,
@@ -175,6 +174,7 @@ public class ShoppingCart {
     }
 
     public ShoppingCart queryCart() {
+        items = new ArrayList<>();
         String query = String.format(
                 "SELECT DISTINCT karts.KartID, CustomerID, kartline.id, kartline.ProductID, kartline.Quantity,\n" +
                         "games.Title, games.Type, games.Price, games.Stock\n" +
@@ -196,7 +196,6 @@ public class ShoppingCart {
                 String type = rs.getString("Type");
                 double price = rs.getDouble("Price");
                 int stock = rs.getInt("Stock");
-                System.out.println(title);
 
                 Item item = new Item(
                         itemID, itemQuantity, new Product(title, type, price, stock, productID)
@@ -231,7 +230,7 @@ public class ShoppingCart {
             if (!itemFound) {
                 try {
                     PreparedStatement insertPst = db.prepareStatement(
-                            String.format("INSERT INTO kartline(productID, kartID, quantity) VALUES(?,?,?)")
+                            "INSERT INTO kartline(productID, kartID, quantity) VALUES(?,?,?)"
                     );
                     insertPst.setString(1, item.getProduct().getId());
                     insertPst.setString(2, id);
@@ -264,6 +263,10 @@ public class ShoppingCart {
 
     public String getId() {
         return id;
+    }
+
+    public ArrayList<Item> toArrayList() {
+        return items;
     }
 
     @Override

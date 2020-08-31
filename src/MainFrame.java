@@ -1,6 +1,4 @@
-import java.awt.BorderLayout;
 import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -8,13 +6,7 @@ import javax.swing.JLabel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import java.awt.Color;
-import java.awt.SystemColor;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.awt.event.ActionEvent;
 
 public class MainFrame extends JFrame {
 
@@ -24,29 +16,25 @@ public class MainFrame extends JFrame {
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Connection con = new MYSQLConnection().getDBConnection();
-					MainFrame frame = new MainFrame(con);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+		EventQueue.invokeLater(() -> {
+			try {
+				Connection con = new MYSQLConnection().getDBConnection();
+				MainFrame frame = new MainFrame(con);
+				frame.setVisible(true);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
 	}
 	/**
 	 * Create the frame.
 	 */
-	private Connection con;
+	private final Connection con;
 	public MainFrame(Connection con) {
 		this.con = con;
 		getWidgets();
+		setVisible(true);
 	}
-
-	//default constructor for extending classes
-	public MainFrame() {dispose();}
 
 	private void getWidgets() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -57,13 +45,9 @@ public class MainFrame extends JFrame {
 		contentPane.setLayout(null);
 
 		JButton btnNewButton_1 = new JButton("");
-		btnNewButton_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				dispose();
-				ClientMainFrame c = new ClientMainFrame(con);
-				c.setVisible(true);
-			}
+		btnNewButton_1.addActionListener(e -> {
+			new ClientMainFrame(con);
+			dispose();
 		});
 		btnNewButton_1.setBackground(Color.LIGHT_GRAY);
 		btnNewButton_1.setIcon(new ImageIcon("img\\client.png"));
@@ -71,14 +55,9 @@ public class MainFrame extends JFrame {
 		contentPane.add(btnNewButton_1);
 
 		JButton btnNewButton = new JButton("");
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-
-				dispose();
-				EmployeeMainFrame i = new EmployeeMainFrame(con);
-				i.setVisible(true);
-
-			}
+		btnNewButton.addActionListener(e -> {
+			new EmployeeMainFrame(con);
+			dispose();
 		});
 		btnNewButton.setForeground(Color.BLACK);
 		btnNewButton.setBackground(new Color(0, 0, 0));

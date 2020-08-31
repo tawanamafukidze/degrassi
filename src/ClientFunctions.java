@@ -1,7 +1,4 @@
-import com.mysql.cj.jdbc.result.ResultSetMetaData;
-
 import java.awt.EventQueue;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.*;
@@ -22,7 +19,6 @@ import javax.swing.table.TableRowSorter;
 public class ClientFunctions extends JFrame {
 
     private final Customer customer;
-    private JPanel contentPane;
     private JTable Customers;
     private JTable tblProducts;
     Connection con;
@@ -38,17 +34,15 @@ public class ClientFunctions extends JFrame {
      * Launch the application.
      */
     public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    Connection con = new MYSQLConnection().getDBConnection();
-                    ClientFunctions frame = new ClientFunctions(
-                            con, new Customer(con, "test@gmail.com", "pass")
-                    );
-                    frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        EventQueue.invokeLater(() -> {
+            try {
+                Connection con = new MYSQLConnection().getDBConnection();
+                ClientFunctions frame = new ClientFunctions(
+                        con, new Customer(con, "test@gmail.com", "pass")
+                );
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
@@ -85,14 +79,13 @@ public class ClientFunctions extends JFrame {
             tbl.setRowCount(0);
 
             while (rs.next()) {
-                Vector v2 = new Vector();
-
-                v2.add(rs.getString("Title"));
-                v2.add(rs.getString("Type"));
-                v2.add(rs.getString("Stock"));
-                v2.add(rs.getString("Price"));
-                v2.add(rs.getString("gameID"));
-                tbl.addRow(v2.toArray());
+                Vector<Object> gameVector = new Vector<>();
+                gameVector.add(rs.getString("Title"));
+                gameVector.add(rs.getString("Type"));
+                gameVector.add(rs.getString("Stock"));
+                gameVector.add(rs.getString("Price"));
+                gameVector.add(rs.getInt("gameID"));
+                tbl.addRow(gameVector.toArray());
             }
         } catch (SQLException ex) {
             Logger.getLogger(AdminSearch.class.getName()).isLoggable(Level.SEVERE);
@@ -108,7 +101,7 @@ public class ClientFunctions extends JFrame {
         this.customer = customer;
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 685, 594);
-        contentPane = new JPanel();
+        JPanel contentPane = new JPanel();
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
         setResizable(false);
@@ -159,7 +152,7 @@ public class ClientFunctions extends JFrame {
             public void keyReleased(KeyEvent e) {
                 DefaultTableModel filteredTable = (DefaultTableModel) tblProducts.getModel();
                 String search = "(?i)" + "^" + txtSearchGames.getText();
-                TableRowSorter<DefaultTableModel> tr = new TableRowSorter<DefaultTableModel>(filteredTable);
+                TableRowSorter<DefaultTableModel> tr = new TableRowSorter<>(filteredTable);
                 tblProducts.setRowSorter(tr);
                 tr.setRowFilter(RowFilter.regexFilter(search));
             }
@@ -197,7 +190,7 @@ public class ClientFunctions extends JFrame {
                 if (tblProducts.getSelectedRow() > 1) {
                     int selected = tblProducts.getSelectedRow();
                     maxSpinnerValue = Integer.parseInt(tbl.getValueAt(selected, 2).toString());
-                    ;
+
                     quantitySpinner.setModel(
                             new SpinnerNumberModel(1, 1, maxSpinnerValue, 1)
                     );
@@ -401,12 +394,12 @@ public class ClientFunctions extends JFrame {
                 super.mousePressed(e);
                 long start = System.currentTimeMillis();
                 customer.checkOut();
-                while (System.currentTimeMillis() - start < 6000){
+                while (System.currentTimeMillis() - start < 6000) {
                     System.out.print("");
                 }
 
                 JOptionPane.showMessageDialog(null,
-                        String.format("Your order has been shipped.\n")
+                        "Your order has been shipped.\n"
                 );
                 getCartItems();
             }
@@ -423,10 +416,10 @@ public class ClientFunctions extends JFrame {
     }
 
     private void getCartItems() {
+        tblKart.setVisible(false);
         customer.getShoppingCart();
         ArrayList<Item> cartItems = customer.getShoppingCart().toArrayList();
-        DefaultTableModel cartModel = new DefaultTableModel();
-        tblKart.setVisible(false);
+        DefaultTableModel cartModel;
         cartModel = (DefaultTableModel) tblKart.getModel();
         cartModel.setRowCount(0);
         Vector<Object> itemDetails;

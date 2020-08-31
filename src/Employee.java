@@ -7,10 +7,10 @@ import java.sql.SQLException;
 public class Employee extends Person {
 
     //Creates a new user instance and verifies the information provided by the client before committing to the the DB
-    public Employee(Connection con, String firstName, String lastName, String email, String password, String phone) {
-        super(con, firstName, lastName, email, password, phone);
-        setEmployee(true);
-    }
+    //public Employee(Connection con, String firstName, String lastName, String email, String password, String phone) {
+    //    super(con, firstName, lastName, email, password, phone);
+    //    setEmployee(true);
+    //}
 
     //Fetch the required user from the database
     public Employee(Connection con, String email, String password) {
@@ -20,32 +20,6 @@ public class Employee extends Person {
             queryEmployee(email, password);
         }
     }
-
-    public String db_commit() {
-        try {
-            PreparedStatement pst = dbConnection().prepareStatement(
-                    "Insert into Admin(FirstName, Surname, EmailAddress,Password,PhoneNumber) Values(?,?,?,?,?)"
-            );
-            pst.setString(1, getFirstName());
-            pst.setString(2, getLastName());
-            pst.setString(3, getEmail());
-            pst.setString(4, getPassword());
-            pst.setString(5, getPhone());
-            pst.executeUpdate();
-
-            String query = String.format("SELECT * FROM Admin Where EmailAddress = '%s'", getEmail());
-            pst = dbConnection().prepareStatement(query);
-            ResultSet result = pst.executeQuery();
-
-            if (result.next()) {
-                return result.getString("CustomerID");
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
-    }
-
     public void queryEmployee(String email, String password) {
         String query = String.format(
                 "SELECT * FROM Admin WHERE EmailAddress = '%s' and Password = '%s'", email, password
@@ -67,45 +41,15 @@ public class Employee extends Person {
 
                 //user has logged in
                 setActive(true);
-            } else {
-                JOptionPane.showMessageDialog(new MainFrame(),
-                        "User Not Found: Please check the email and password provided."
-                );
+            }
+            //user not logged in
+            if (!Active()) {
+                    JOptionPane.showMessageDialog(null,
+                            "User Not Found: Please check the email and password provided."
+                    );
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-    }
-
-    public boolean shipOrder(String orderID) {
-        try {
-            PreparedStatement pst = dbConnection().prepareStatement(String.format("UPDATE customer_orders" +
-                    "SET status = 'shipping' WHERE orderID = '%s'", orderID)
-            );
-            pst.executeQuery();
-            JOptionPane.showMessageDialog(null, "Order status has been set to shipping.",
-                    "Order Status", JOptionPane.INFORMATION_MESSAGE
-            );
-            return true;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean confirmShipment(String orderID) {
-        try {
-            PreparedStatement pst = dbConnection().prepareStatement(String.format("UPDATE customer_orders" +
-                    "SET status = 'shipped' WHERE orderID = '%s'", orderID)
-            );
-            pst.executeQuery();
-            JOptionPane.showMessageDialog(null, "Order status has been set to shipped.",
-                    "Order Status", JOptionPane.INFORMATION_MESSAGE
-            );
-            return true;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return false;
     }
 }

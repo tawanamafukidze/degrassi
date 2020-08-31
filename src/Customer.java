@@ -82,7 +82,7 @@ public class Customer extends Person {
                 //user has logged in
                 setActive(true);
             } else {
-                JOptionPane.showMessageDialog(new MainFrame(),
+                JOptionPane.showMessageDialog(null,
                         "User Not Found: Please check the email and password provided."
                 );
             }
@@ -92,10 +92,10 @@ public class Customer extends Person {
     }
 
     //query the customer by the provided id
-    public void queryCustomer(String id) {
-        if (!isEmployee()) return;
+    public void queryCustomer(Employee user, String id) {
+        if (!user.isEmployee()) return;
         String query = String.format(
-                "SELECT * FROM Customers WHERE EmailAddress = '%s'", id
+                "SELECT * FROM Customers WHERE customerID = '%s'", id
         );
         try {
             PreparedStatement pst = dbConnection().prepareStatement(query);
@@ -105,7 +105,7 @@ public class Customer extends Person {
                 String firstName = result.getString("FirstName");
                 String lastName = result.getString("Surname");
                 String phone = result.getString("PhoneNumber");
-                String email = result.getString("email");
+                String email = result.getString("EmailAddress");
                 setId(result.getString("CustomerID"));
                 setFirstName(firstName);
                 setLastName(lastName);
@@ -115,7 +115,7 @@ public class Customer extends Person {
                 customerAddress = new Address(dbConnection()).queryAddress(customerID);
                 customerCart = new ShoppingCart(dbConnection(), customerID).queryCart();
             } else {
-                JOptionPane.showMessageDialog(new MainFrame(),
+                JOptionPane.showMessageDialog(null,
                         "User Not Found: Please check the email and password provided."
                 );
             }
@@ -125,8 +125,11 @@ public class Customer extends Person {
     }
 
     public ShoppingCart getShoppingCart() {
+        queryCart();
         return customerCart;
     }
+
+    private void queryCart() { customerCart = customerCart.queryCart(); }
 
     public void checkOut() {
         try {
@@ -152,12 +155,12 @@ public class Customer extends Person {
         customerCart.checkOut();
     }
 
-    public String getCustomerAddress() {
+    public Address getCustomerAddress() {
         try {
-            return customerAddress.toString();
+            return customerAddress;
         } catch (NullPointerException ignored) {
         }
-        return "";
+        return null;
     }
 
     public static void main(String[] args) {
