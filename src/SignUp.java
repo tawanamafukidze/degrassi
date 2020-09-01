@@ -1,201 +1,202 @@
+import sun.plugin.dom.html.HTMLBodyElement;
+
 import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.ImageIcon;
-import javax.swing.JFormattedTextField;
-import javax.swing.JButton;
 import java.sql.Connection;
-import javax.swing.JPasswordField;
 
-public class SignUp extends JFrame {
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
-    private JPanel contentPane;
-    private final JPasswordField txtPassword;
-    private final JPasswordField txtRePassword;
+public class SignUp extends GUI {
+    private JPasswordField txtPassword;
+    private JPasswordField txtReEnterPassword;
+    private final Connection con;
+    private JFormattedTextField txtFirstName;
+    private JFormattedTextField txtSurname;
+    private JFormattedTextField txtPhoneNumber;
+    private JFormattedTextField txtEmailAddress;
+    private JFormattedTextField txtPostalCode;
+    private JFormattedTextField txtStreet;
+    private JFormattedTextField txtCity;
+    private JFormattedTextField txtState;
 
-    /**
-     * Launch the application.
-     */
+
+    //Create the frame.
+
+    public SignUp(Connection con) {
+        super();
+        this.con = con;
+        loadWidgets();
+        setVisible(true);
+    }
+    @Override
+    protected void loadWidgets() {
+        JLabel FirstNameLabel = new JLabel();
+        JLabel SurnameLabel = new JLabel();
+        JLabel PhoneNumberLabel = new JLabel();
+        JLabel EmailAddressLabel = new JLabel();
+        JLabel PasswordLabel = new JLabel();
+        JLabel reEnterPasswordLabel = new JLabel();
+        JLabel StreetLabel = new JLabel();
+        JLabel CityLabel = new JLabel();
+        JLabel StateCodeLabel = new JLabel("New label");
+        JLabel PostalCodeLabel = new JLabel();
+
+        txtFirstName = new JFormattedTextField();
+        txtSurname = new JFormattedTextField();
+        txtPhoneNumber = new JFormattedTextField();
+        txtEmailAddress = new JFormattedTextField();
+        txtPassword = new JPasswordField();
+        txtReEnterPassword = new JPasswordField();
+        txtPostalCode = new JFormattedTextField();
+        txtStreet = new JFormattedTextField();
+        txtCity = new JFormattedTextField();
+        txtState = new JFormattedTextField();
+        JButton clientFrameBtn = new JButton();
+        JButton nxtBtn = new JButton();
+
+
+        clientFrameBtn.addActionListener(e -> {
+            dispose();
+            new ClientMainFrame(con);
+        });
+        clientFrameBtn.setIcon(new ImageIcon("img\\backbtn2.png"));
+        clientFrameBtn.setBounds(28, 521, 89, 23);
+
+        txtPostalCode.setBounds(296, 469, 136, 22);
+        txtStreet.setBounds(296, 334, 136, 22);
+        txtCity.setBounds(296, 424, 136, 22);
+        txtState.setBounds(296, 379, 136, 22);
+        PostalCodeLabel.setBounds(28, 469, 102, 22);
+        PostalCodeLabel.setIcon(new ImageIcon("img\\postalcode.png"));
+        StreetLabel.setIcon(new ImageIcon("img\\Street.png"));
+        StreetLabel.setBounds(28, 334, 79, 22);
+        CityLabel.setIcon(new ImageIcon("img\\city.png"));
+        CityLabel.setBounds(28, 379, 46, 22);
+        StateCodeLabel.setIcon(new ImageIcon("img\\statecode2.png"));
+        StateCodeLabel.setBounds(28, 424, 102, 22);
+
+        FirstNameLabel.setBounds(28, 64, 112, 22);
+        FirstNameLabel.setIcon(new ImageIcon("img\\firstname.png"));
+        SurnameLabel.setBounds(28, 109, 79, 22);
+        SurnameLabel.setIcon(new ImageIcon("img\\surname.png"));
+        txtPhoneNumber.setBounds(296, 289, 136, 22);
+        PhoneNumberLabel.setIcon(new ImageIcon("img\\phonenumber.png"));
+        PhoneNumberLabel.setBounds(28, 289, 117, 22);
+        EmailAddressLabel.setBounds(28, 154, 123, 22);
+        EmailAddressLabel.setIcon(new ImageIcon("img\\addy.png"));
+        PasswordLabel.setBounds(28, 199, 112, 22);
+        PasswordLabel.setIcon(new ImageIcon("img\\passwordsign.png"));
+        reEnterPasswordLabel.setBounds(28, 244, 161, 22);
+        reEnterPasswordLabel.setIcon(new ImageIcon("img\\reenterpass.png"));
+
+        txtFirstName.setBounds(296, 63, 136, 23);
+        txtSurname.setBounds(296, 109, 136, 24);
+        txtEmailAddress.setBounds(296, 156, 136, 22);
+        txtPassword.setBounds(296, 201, 136, 21);
+        txtReEnterPassword.setBounds(296, 245, 135, 21);
+
+        nxtBtn.addActionListener(e -> registerCustomer());
+        nxtBtn.setIcon(new ImageIcon("img\\nxt4.png"));
+        nxtBtn.setBounds(353, 514, 79, 23);
+
+
+        contentPane.add(txtStreet);
+        contentPane.add(StreetLabel);
+        contentPane.add(txtCity);
+        contentPane.add(CityLabel);
+        contentPane.add(txtState);
+        contentPane.add(StateCodeLabel);
+        contentPane.add(txtPostalCode);
+        contentPane.add(PostalCodeLabel);
+
+        contentPane.add(txtFirstName);
+        contentPane.add(FirstNameLabel);
+        contentPane.add(txtSurname);
+        contentPane.add(SurnameLabel);
+        contentPane.add(txtPhoneNumber);
+        contentPane.add(PhoneNumberLabel);
+        contentPane.add(txtEmailAddress);
+        contentPane.add(EmailAddressLabel);
+        contentPane.add(txtPassword);
+        contentPane.add(PasswordLabel);
+        contentPane.add(txtReEnterPassword);
+        contentPane.add(reEnterPasswordLabel);
+        contentPane.add(clientFrameBtn);
+        contentPane.add(nxtBtn);
+        contentPane.add(headingLabel);
+        contentPane.add(background);
+    }
+
+    private void registerCustomer() {
+        String FirstName = txtFirstName.getText();
+        String Surname = txtSurname.getText();
+        String EmailAddress = txtEmailAddress.getText();
+        String Password = String.valueOf(txtPassword.getPassword());
+        String RePassword = String.valueOf(txtReEnterPassword.getPassword());
+        String PhoneNumber = txtPhoneNumber.getText();
+        Customer newCustomer = new Customer(con, FirstName, Surname,
+                EmailAddress, Password, PhoneNumber
+        );
+
+        String State = txtState.getText();
+        String City = txtCity.getText();
+        String PostalCode = txtPostalCode.getText();
+        String Street = txtStreet.getText();
+
+        if (newCustomer.isValidEntry()) {
+            if (newCustomer.checkPassword(RePassword)) {
+                //create address instance and associate user with address if validation passes
+                Address newAddress = new Address(con, Street, City, State, PostalCode);
+
+                if (newAddress.isValidEntry()) {
+                    String customerID = newCustomer.db_commit();
+                    //Don't Insert data into address table if no customerID was given (error during user creation)
+                    if (customerID != null) {
+                        newAddress.db_commit(customerID);
+                        dispose();
+                        new ClientMainFrame(con);
+                    } else {
+                        JOptionPane.showMessageDialog(
+                                this,
+                                "Internal Error: User was not created.\n" +
+                                        "Please try again...",
+                                "Registration Status", JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Password entered does not match.",
+                        "Registration Status",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        }
+
+    }
+
+    @Override
+    protected void setConfig() {
+        super.setConfig();
+        setBounds(100, 100, 592, 595);
+        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+        headingLabel.setIcon(new ImageIcon("img\\heading3.png"));
+        headingLabel.setBounds(49, 11, 376, 46);
+        background.setIcon(new ImageIcon("img\\ps4 wall.png"));
+        background.setBounds(-19, -21, 659, 600);
+    }
+
+    
+    //launch the application.
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
             try {
-                SignUp frame = new SignUp();
-                frame.setVisible(true);
+                Connection myCon = new MYSQLConnection().getDBConnection();
+                new SignUp(myCon);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
-    }
-
-    Connection con;
-
-    /**
-     * Create the frame.
-     */
-    public SignUp() {
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setBounds(100, 100, 592, 665);
-        contentPane = new JPanel();
-        contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-        setContentPane(contentPane);
-        contentPane.setLayout(null);
-
-        JButton btnNewButton = new JButton();
-        btnNewButton.addActionListener(e -> {
-            dispose();
-            ClientMainFrame c = new ClientMainFrame(con);
-            c.setVisible(true);
-        });
-
-        JFormattedTextField txtPostalCode = new JFormattedTextField();
-        txtPostalCode.setBounds(296, 469, 136, 22);
-        contentPane.add(txtPostalCode);
-
-        JFormattedTextField txtStreet = new JFormattedTextField();
-        txtStreet.setBounds(296, 334, 136, 22);
-        contentPane.add(txtStreet);
-
-        JFormattedTextField txtCity = new JFormattedTextField();
-        txtCity.setBounds(296, 424, 136, 22);
-        contentPane.add(txtCity);
-
-        JFormattedTextField txtState = new JFormattedTextField();
-        txtState.setBounds(296, 379, 136, 22);
-        contentPane.add(txtState);
-
-        JLabel PostalCodeLabel = new JLabel();
-        PostalCodeLabel.setIcon(new ImageIcon("img\\postalcode.png"));
-        PostalCodeLabel.setBounds(28, 469, 102, 22);
-        contentPane.add(PostalCodeLabel);
-
-        JLabel StreetLabel = new JLabel();
-        StreetLabel.setIcon(new ImageIcon("img\\Street.png"));
-        StreetLabel.setBounds(28, 334, 79, 22);
-        contentPane.add(StreetLabel);
-
-        JLabel CityLabel = new JLabel();
-        CityLabel.setIcon(new ImageIcon("img\\city.png"));
-        CityLabel.setBounds(28, 379, 46, 22);
-        contentPane.add(CityLabel);
-
-        JLabel StateCodeLabel = new JLabel("New label");
-        StateCodeLabel.setIcon(new ImageIcon("img\\statecode2.png"));
-        StateCodeLabel.setBounds(28, 424, 102, 22);
-        contentPane.add(StateCodeLabel);
-
-        JFormattedTextField txtPhoneNumber = new JFormattedTextField();
-        txtPhoneNumber.setBounds(296, 289, 136, 22);
-        contentPane.add(txtPhoneNumber);
-
-        JLabel PhoneNumberLabel = new JLabel();
-        PhoneNumberLabel.setIcon(new ImageIcon("img\\phonenumber.png"));
-        PhoneNumberLabel.setBounds(28, 289, 117, 22);
-        contentPane.add(PhoneNumberLabel);
-
-        txtRePassword = new JPasswordField();
-        txtRePassword.setBounds(296, 245, 135, 21);
-        contentPane.add(txtRePassword);
-
-        txtPassword = new JPasswordField();
-        txtPassword.setBounds(296, 201, 136, 21);
-        contentPane.add(txtPassword);
-
-        JFormattedTextField txtEmailAddress = new JFormattedTextField();
-        txtEmailAddress.setBounds(296, 156, 136, 22);
-        contentPane.add(txtEmailAddress);
-
-        JFormattedTextField txtSurname = new JFormattedTextField();
-        txtSurname.setBounds(296, 109, 136, 24);
-        contentPane.add(txtSurname);
-
-        JFormattedTextField txtFirstName = new JFormattedTextField();
-        txtFirstName.setBounds(296, 63, 136, 23);
-        contentPane.add(txtFirstName);
-
-        btnNewButton.setIcon(new ImageIcon("img\\backbtn2.png"));
-        btnNewButton.setBounds(28, 521, 89, 23);
-        contentPane.add(btnNewButton);
-
-        JButton nxtBtn = new JButton();
-        nxtBtn.addActionListener(e -> {
-            String FirstName = txtFirstName.getText();
-            String Surname = txtSurname.getText();
-            String EmailAddress = txtEmailAddress.getText();
-            String Password = String.valueOf(txtPassword.getPassword());
-            String RePassword = String.valueOf(txtRePassword.getPassword());
-            String PhoneNumber = txtPhoneNumber.getText();
-            Customer newCustomer = new Customer(con, FirstName, Surname,
-                    EmailAddress, Password, PhoneNumber
-            );
-
-            String State = txtState.getText();
-            String City = txtCity.getText();
-            String PostalCode = txtPostalCode.getText();
-            String Street = txtStreet.getText();
-
-            if (newCustomer.isValidEntry()) {
-                if (newCustomer.checkPassword(RePassword)) {
-                    Address newAddress = new Address(con, Street, City, State, PostalCode);
-
-                    if (newAddress.isValidEntry()) {
-                        String customerID = newCustomer.db_commit();
-                        //Don't Insert data into address table if no customerID was given (error during user creation)
-                        if (customerID != null) {
-                            newAddress.db_commit(customerID);
-                            dispose();
-                            new ClientMainFrame(con).setVisible(true);
-                        } else {
-                            JOptionPane.showMessageDialog(
-                                    contentPane, "Internal Error: User was not created. \n Please try again..."
-                            );
-                        }
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(txtPassword, "Password entered does not match.");
-                }
-            }
-
-        });
-        nxtBtn.setIcon(new ImageIcon("img\\nxt4.png"));
-        nxtBtn.setBounds(353, 514, 79, 23);
-        contentPane.add(nxtBtn);
-
-        JLabel degrassi = new JLabel();
-        degrassi.setIcon(new ImageIcon("img\\heading3.png"));
-        degrassi.setBounds(49, 11, 376, 46);
-        contentPane.add(degrassi);
-
-        JLabel ReEnterLabel = new JLabel();
-        ReEnterLabel.setIcon(new ImageIcon("img\\reenterpass.png"));
-        ReEnterLabel.setBounds(28, 244, 161, 22);
-        contentPane.add(ReEnterLabel);
-
-        JLabel PasswordLabel = new JLabel();
-        PasswordLabel.setIcon(new ImageIcon("img\\passwordsign.png"));
-        PasswordLabel.setBounds(28, 199, 112, 22);
-        contentPane.add(PasswordLabel);
-
-        JLabel SurnameLabel = new JLabel();
-        SurnameLabel.setIcon(new ImageIcon("img\\surname.png"));
-        SurnameLabel.setBounds(28, 109, 79, 22);
-        contentPane.add(SurnameLabel);
-
-        JLabel FirstNameLabel = new JLabel();
-        FirstNameLabel.setIcon(new ImageIcon("img\\firstname.png"));
-        FirstNameLabel.setBounds(28, 64, 112, 22);
-        contentPane.add(FirstNameLabel);
-
-        JLabel EmailAddressLabel = new JLabel();
-        EmailAddressLabel.setIcon(new ImageIcon("img\\addy.png"));
-        EmailAddressLabel.setBounds(28, 154, 123, 22);
-        contentPane.add(EmailAddressLabel);
-
-        JLabel nextbtn = new JLabel();
-        nextbtn.setIcon(new ImageIcon("img\\ps4 wall.png"));
-        nextbtn.setBounds(-19, -21, 659, 600);
-        contentPane.add(nextbtn);
     }
 }

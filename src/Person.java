@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public abstract class Person {
+public abstract class Person extends Exception{
     private String id;
     private String firstName;
     private String lastName;
@@ -134,10 +134,6 @@ public abstract class Person {
         }
     }
 
-    protected Connection dbConnection() {
-        return db;
-    }
-
     public boolean checkPassword(String userPass) {
         return password.equals(userPass);
     }
@@ -204,6 +200,10 @@ public abstract class Person {
 
     public void setEmployee(boolean employee) {
         isEmployee = employee;
+    }
+
+    public Connection getDBConnection() {
+        return db;
     }
 
     @Override

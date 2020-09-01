@@ -59,7 +59,7 @@ public class ShoppingCart {
     public void addToCart(Item item) {
         if (storeHasStock(item, item.getQuantity())) {
             try {
-                pst = db.prepareStatement("INSERT INTO kartline(ProductID, KartID, Quantity) Values(?,?,?)");
+                pst = db.prepareStatement("INSERT INTO kartline(gameID, KartID, Quantity) Values(?,?,?)");
                 pst.setString(1, item.getProduct().getId());
                 pst.setString(2, id);
                 pst.setInt(3, item.getQuantity());
@@ -136,7 +136,7 @@ public class ShoppingCart {
                     info.toString(), "Cart Status", JOptionPane.INFORMATION_MESSAGE
             );
             for (Item item : outOfStock) {
-                query = String.format("DELETE FROM kartline WHERE kartID = '%s' AND productID = '%s'",
+                query = String.format("DELETE FROM kartline WHERE kartID = '%s' AND gameID = '%s'",
                         id, item.getProduct().getId()
                 );
                 try {
@@ -176,13 +176,13 @@ public class ShoppingCart {
     public ShoppingCart queryCart() {
         items = new ArrayList<>();
         String query = String.format(
-                "SELECT DISTINCT karts.KartID, CustomerID, kartline.id, kartline.ProductID, kartline.Quantity,\n" +
+                "SELECT DISTINCT karts.KartID, CustomerID, kartline.id, kartline.gameID, kartline.Quantity,\n" +
                         "games.Title, games.Type, games.Price, games.Stock\n" +
                         "FROM karts\n" +
                         "INNER JOIN kartline\n" +
                         "ON karts.kartID = kartline.KartID AND karts.CustomerID = '%s'\n" +
                         "INNER JOIN games\n" +
-                        "ON kartline.productID = games.gameID", customerID);
+                        "ON kartline.gameID = games.gameID", customerID);
         try {
             PreparedStatement pst = db.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
@@ -191,14 +191,14 @@ public class ShoppingCart {
                 id = rs.getString("kartID");
                 String itemID = rs.getString("id");
                 int itemQuantity = rs.getInt("Quantity");
-                String productID = rs.getString("productID");
+                String gameID = rs.getString("gameID");
                 String title = rs.getString("Title");
                 String type = rs.getString("Type");
                 double price = rs.getDouble("Price");
                 int stock = rs.getInt("Stock");
 
                 Item item = new Item(
-                        itemID, itemQuantity, new Product(title, type, price, stock, productID)
+                        itemID, itemQuantity, new Product(title, type, price, stock, gameID)
                 );
                 items.add(item);
             }
@@ -213,7 +213,7 @@ public class ShoppingCart {
         boolean itemFound = false;
         try {
             pst = db.prepareStatement(
-                    String.format("SELECT quantity FROM kartline WHERE kartID = %s AND productID = %s"
+                    String.format("SELECT quantity FROM kartline WHERE kartID = %s AND gameID = %s"
                             , id, item.getProduct().getId())
             );
             ResultSet result = pst.executeQuery();
@@ -222,7 +222,7 @@ public class ShoppingCart {
                 //int currentQuantity = result.getInt("quantity");
                 db.prepareStatement(String.format("UPDATE kartline " +
                                 "SET quantity = %s " +
-                                "WHERE kartID = %s AND productID = %s",
+                                "WHERE kartID = %s AND gameID = %s",
                         item.getQuantity(), id, item.getProduct().getId())
                 ).executeUpdate();
             }
@@ -230,7 +230,7 @@ public class ShoppingCart {
             if (!itemFound) {
                 try {
                     PreparedStatement insertPst = db.prepareStatement(
-                            "INSERT INTO kartline(productID, kartID, quantity) VALUES(?,?,?)"
+                            "INSERT INTO kartline(gameID, kartID, quantity) VALUES(?,?,?)"
                     );
                     insertPst.setString(1, item.getProduct().getId());
                     insertPst.setString(2, id);

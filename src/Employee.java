@@ -7,7 +7,7 @@ import java.sql.SQLException;
 public class Employee extends Person {
 
     //Creates a new user instance and verifies the information provided by the client before committing to the the DB
-    //public Employee(Connection con, String firstName, String lastName, String email, String password, String phone) {
+    //public Employee(getgetDBConnection con, String firstName, String lastName, String email, String password, String phone) {
     //    super(con, firstName, lastName, email, password, phone);
     //    setEmployee(true);
     //}
@@ -20,12 +20,13 @@ public class Employee extends Person {
             queryEmployee(email, password);
         }
     }
+
     public void queryEmployee(String email, String password) {
         String query = String.format(
                 "SELECT * FROM Admin WHERE EmailAddress = '%s' and Password = '%s'", email, password
         );
         try {
-            PreparedStatement pst = dbConnection().prepareStatement(query);
+            PreparedStatement pst = getDBConnection().prepareStatement(query);
             ResultSet result = pst.executeQuery();
             if (result.next()) {
                 //store to customer instance
@@ -44,12 +45,24 @@ public class Employee extends Person {
             }
             //user not logged in
             if (!Active()) {
-                    JOptionPane.showMessageDialog(null,
-                            "User Not Found: Please check the email and password provided."
-                    );
+                JOptionPane.showMessageDialog(null,
+                        "User Not Found: Please check the email and password provided."
+                );
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
+    }
+
+    public boolean addInventory(String title, String type, int stock, double Price) throws SQLException {
+        PreparedStatement pst = getDBConnection().prepareStatement(
+                "Insert into games( Title, Type, stock, Price) Values(?,?,?,?)"
+        );
+        pst.setString(1, title);
+        pst.setString(2, type);
+        pst.setInt(3, stock);
+        pst.setDouble(4, Price);
+        pst.executeUpdate();
+        return true;
     }
 }

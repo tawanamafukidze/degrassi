@@ -25,7 +25,7 @@ public class MYSQLConnection {
             } catch (SQLException e) {
                 JOptionPane.showMessageDialog(
                         null, "Error: Could Not Connect TO MYSQL DATABASE",
-                        "Server Connection", JOptionPane.ERROR_MESSAGE
+                        "Server getDBConnection", JOptionPane.ERROR_MESSAGE
                 );
                 System.exit(1);
             }
@@ -35,7 +35,7 @@ public class MYSQLConnection {
                     "Dependency Error", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
-        System.out.println("Connection Successful");
+        System.out.println("getDBConnection Successful");
     }
 
     public Connection getDBConnection() {  //used to return the value of the connection

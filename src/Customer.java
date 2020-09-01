@@ -33,7 +33,7 @@ public class Customer extends Person {
     //commit to db
     public String db_commit() {
         try {
-            PreparedStatement pst = dbConnection().prepareStatement(
+            PreparedStatement pst = getDBConnection().prepareStatement(
                     "Insert into Customers(FirstName, Surname, EmailAddress,Password,PhoneNumber) " +
                             "Values(?,?,?,?,?)"
             );
@@ -45,7 +45,7 @@ public class Customer extends Person {
             pst.executeUpdate();
 
             String query = String.format("SELECT * FROM Customers Where EmailAddress = '%s'", getEmail());
-            pst = dbConnection().prepareStatement(query);
+            pst = getDBConnection().prepareStatement(query);
             ResultSet result = pst.executeQuery();
 
             if (result.next()) {
@@ -63,7 +63,7 @@ public class Customer extends Person {
                 "SELECT * FROM Customers WHERE EmailAddress = '%s' and Password = '%s'", email, password
         );
         try {
-            PreparedStatement pst = dbConnection().prepareStatement(query);
+            PreparedStatement pst = getDBConnection().prepareStatement(query);
             ResultSet result = pst.executeQuery();
             if (result.next()) {
                 //store to customer instance
@@ -77,8 +77,8 @@ public class Customer extends Person {
                 setPassword(password);
                 setPhone(phone);
                 String customerID = getId();
-                customerAddress = new Address(dbConnection()).queryAddress(customerID);
-                customerCart = new ShoppingCart(dbConnection(), customerID).queryCart();
+                customerAddress = new Address(getDBConnection()).queryAddress(customerID);
+                customerCart = new ShoppingCart(getDBConnection(), customerID).queryCart();
                 //user has logged in
                 setActive(true);
             } else {
@@ -98,7 +98,7 @@ public class Customer extends Person {
                 "SELECT * FROM Customers WHERE customerID = '%s'", id
         );
         try {
-            PreparedStatement pst = dbConnection().prepareStatement(query);
+            PreparedStatement pst = getDBConnection().prepareStatement(query);
             ResultSet result = pst.executeQuery();
             if (result.next()) {
                 //store to customer instance
@@ -112,8 +112,8 @@ public class Customer extends Person {
                 setEmail(email);
                 setPhone(phone);
                 String customerID = getId();
-                customerAddress = new Address(dbConnection()).queryAddress(customerID);
-                customerCart = new ShoppingCart(dbConnection(), customerID).queryCart();
+                customerAddress = new Address(getDBConnection()).queryAddress(customerID);
+                customerCart = new ShoppingCart(getDBConnection(), customerID).queryCart();
             } else {
                 JOptionPane.showMessageDialog(null,
                         "User Not Found: Please check the email and password provided."
@@ -134,7 +134,7 @@ public class Customer extends Person {
     public void checkOut() {
         try {
             customerCart.checkOut();
-            customerOrders = new Order(dbConnection(), getId()).queryOrders();
+            customerOrders = new Order(getDBConnection(), getId()).queryOrders();
         } catch (NullPointerException ignored) {
         }
     }
