@@ -1,10 +1,11 @@
+package main.java.degrassi.models;
+
+import main.java.degrassi.controllers.AddressController;
+
 import javax.swing.*;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
-public class Address {
+public class AddressModel {
     private String street;
     private String state;
     private String city;
@@ -12,7 +13,7 @@ public class Address {
     private final Connection db;
     private boolean validEntry = false;
 
-    public Address(Connection con, String street, String state, String city, String postCode) {
+    public AddressModel(Connection con, String street, String state, String city, String postCode) {
         db = con;
         if (FieldLengthInvalid(street, 1, 100)) {
             if (street.length() < 1) {
@@ -51,27 +52,12 @@ public class Address {
         this.postCode = postCode;
     }
 
-    public Address(Connection con) {
+    public AddressModel(Connection con) {
         db = con;
     }
 
-    public Address queryAddress(String id) {
-        String query = String.format("SELECT * FROM Address WHERE CustomerID = '%s'", id);
-        try {
-            PreparedStatement pst = db.prepareStatement(query);
-            ResultSet result = pst.executeQuery();
-
-            if (result.next()) {
-                street = result.getString("Street");
-                city = result.getString("City");
-                state = result.getString("State");
-                postCode = result.getString("PostalCode");
-                return this;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
+    public AddressModel queryAddress(String id) {
+        return AddressController.queryAddress(db, id);
     }
 
     public void db_commit(String customer_id) {
@@ -81,20 +67,7 @@ public class Address {
             );
             return;
         }
-
-        try {
-            PreparedStatement pst = db.prepareStatement(
-                    "Insert into Address(State, City, PostalCode, Street, CustomerID) Values(?,?,?,?,?)"
-            );
-            pst.setString(1, state);
-            pst.setString(2, city);
-            pst.setString(3, postCode);
-            pst.setString(4, street);
-            pst.setString(5, customer_id);
-            pst.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
+        AddressController.commit(this, customer_id);
     }
 
     //checks if provided field is within the input limit and returns true, otherwise false.
@@ -103,19 +76,27 @@ public class Address {
     }
 
     public String getStreet() {
+        if (street == null) return "N/A";
         return street;
     }
 
     public String getCity() {
+        if (street == null) return  "N/A";
         return city;
     }
 
     public String getState() {
+        if (street == null) return  "N/A";
         return state;
     }
 
     public String getPostCode() {
+        if (postCode == null) return "N/A";
         return postCode;
+    }
+
+    public Connection getDb() {
+        return db;
     }
 
     private boolean FieldLengthInvalid(String field, int minLength, int maxLength) {

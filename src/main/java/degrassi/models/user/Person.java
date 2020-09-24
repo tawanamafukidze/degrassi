@@ -1,4 +1,5 @@
-import javax.print.DocFlavor;
+package main.java.degrassi.models.user;
+
 import javax.swing.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -15,10 +16,9 @@ public abstract class Person {
     private final Connection db;
     private boolean isValidEntry = false;
     private boolean isActive = false;
-    private boolean isEmployee;
 
     public Person(Connection con, String firstName, String lastName, String email, String password, String phone) {
-        db = con; //get the mysql connection instance
+        db = con; //get mysql connection instance
         if (FieldLengthInvalid(firstName, 1, 30)) {
             JOptionPane.showMessageDialog(null,
                     "Provided an invalid first name. \n" +
@@ -134,7 +134,7 @@ public abstract class Person {
         }
     }
 
-    protected Connection dbConnection() {
+    public Connection dbConnection() {
         return db;
     }
 
@@ -142,23 +142,23 @@ public abstract class Person {
         return password.equals(userPass);
     }
 
-    protected void setFirstName(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    protected void setLastName(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
-    protected void setPhone(String phone) {
+    public void setPhone(String phone) {
         this.phone = phone;
     }
 
-    protected void setPassword(String password) {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    protected void setEmail(String email) {
+    public void setEmail(String email) {
         this.email = email;
     }
 
@@ -166,44 +166,36 @@ public abstract class Person {
         return phone;
     }
 
-    protected String getPassword() {
+    public String getPassword() {
         return password;
     }
 
-    protected String getEmail() {
+    public String getEmail() {
         return email;
     }
 
-    protected String getLastName() {
+    public String getLastName() {
         return lastName;
     }
 
-    protected void setId(String id) {
+    public void setId(String id) {
         this.id = id;
     }
 
-    protected String getId() {
+    public String getId() {
         return id;
     }
 
-    protected String getFirstName() {
+    public String getFirstName() {
         return firstName;
     }
 
-    protected void setActive(boolean b) {
+    public void setActive(boolean b) {
         isActive = b;
     }
 
-    protected boolean Active() {
+    public boolean Active() {
         return isActive;
-    }
-
-    public boolean isEmployee() {
-        return isEmployee;
-    }
-
-    public void setEmployee(boolean employee) {
-        isEmployee = employee;
     }
 
     @Override
@@ -213,8 +205,7 @@ public abstract class Person {
                 "lastName: %s \n" +
                 "email: %s \n" +
                 "phone: %s \n" +
-                "isActive: %s \n" +
-                "isEmployee: %s \n", id, firstName, lastName, email, phone, isActive, isEmployee
+                "isActive: %s \n", id, firstName, lastName, email, phone, isActive
         );
     }
 }

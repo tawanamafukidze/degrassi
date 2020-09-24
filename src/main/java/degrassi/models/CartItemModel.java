@@ -1,9 +1,11 @@
-public class Item {
+package main.java.degrassi.models;
+
+public class CartItemModel {
     private String id;
     private int quantity;
-    private Product product;
+    private ProductModel product;
 
-    public Item(String id, int quantity, Product product) {
+    public CartItemModel(String id, int quantity, ProductModel product) {
         this.id = id;
         this.quantity = quantity;
         this.product = product;
@@ -17,13 +19,13 @@ public class Item {
         return quantity;
     }
 
-    public Product getProduct() {
+    public ProductModel getProduct() {
         return product;
     }
 
     @Override
     public String toString() {
-        return "Item{" +
+        return "Cart Item{" +
                 "id='" + id + '\'' +
                 ", quantity=" + quantity +
                 ", product=" + product.toString() +

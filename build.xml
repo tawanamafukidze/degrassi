@@ -17,7 +17,7 @@
         <pathelement location="../../Downloads/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49.jar"/>
         <pathelement location="../../Downloads/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49-bin.jar"/>
     </path>
-    <path id="run.ClientMainFrame.classpath">
+    <path id="run.main.java.degrassi.views.client.ClientMainFrame.classpath">
         <path refid="DEGRASSI.classpath"/>
         <pathelement location="jgoodies-common-1.8.0.jar"/>
         <pathelement location="jgoodies-forms-1.8.0.jar"/>
@@ -25,7 +25,7 @@
         <pathelement location="../../Downloads/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49.jar"/>
         <pathelement location="../../Downloads/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49-bin.jar"/>
     </path>
-    <path id="run.EmployeeMainFrame.classpath">
+    <path id="run.main.java.degrassi.views.admin.EmployeeMainFrame.classpath">
         <path refid="DEGRASSI.classpath"/>
         <pathelement location="jgoodies-common-1.8.0.jar"/>
         <pathelement location="jgoodies-forms-1.8.0.jar"/>
@@ -41,7 +41,7 @@
         <pathelement location="../../Downloads/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49.jar"/>
         <pathelement location="../../Downloads/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49-bin.jar"/>
     </path>
-    <path id="run.MainFrame.classpath">
+    <path id="run.main.java.degrassi.views.MainFrame.classpath">
         <path refid="DEGRASSI.classpath"/>
         <pathelement location="jgoodies-common-1.8.0.jar"/>
         <pathelement location="jgoodies-forms-1.8.0.jar"/>
@@ -49,7 +49,7 @@
         <pathelement location="../../Downloads/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49.jar"/>
         <pathelement location="../../Downloads/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49/mysql-connector-java-5.1.49-bin.jar"/>
     </path>
-    <path id="run.SignUp.classpath">
+    <path id="run.main.java.degrassi.views.client.SignUp.classpath">
         <path refid="DEGRASSI.classpath"/>
         <pathelement location="jgoodies-common-1.8.0.jar"/>
         <pathelement location="jgoodies-forms-1.8.0.jar"/>
@@ -108,13 +108,13 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="ClientMainFrame">
-        <java classname="ClientMainFrame" failonerror="true" fork="yes">
+    <target name="main.java.degrassi.views.client.ClientMainFrame">
+        <java classname="main.java.degrassi.views.client.ClientMainFrame" failonerror="true" fork="yes">
             <classpath refid="run.ClientMainFrame.classpath"/>
         </java>
     </target>
-    <target name="EmployeeMainFrame">
-        <java classname="EmployeeMainFrame" failonerror="true" fork="yes">
+    <target name="main.java.degrassi.views.admin.EmployeeMainFrame">
+        <java classname="main.java.degrassi.views.admin.EmployeeMainFrame" failonerror="true" fork="yes">
             <classpath refid="run.EmployeeMainFrame.classpath"/>
         </java>
     </target>
@@ -123,13 +123,13 @@
             <classpath refid="run.Exit.classpath"/>
         </java>
     </target>
-    <target name="MainFrame">
-        <java classname="MainFrame" failonerror="true" fork="yes">
+    <target name="main.java.degrassi.views.MainFrame">
+        <java classname="main.java.degrassi.views.MainFrame" failonerror="true" fork="yes">
             <classpath refid="run.MainFrame.classpath"/>
         </java>
     </target>
-    <target name="SignUp">
-        <java classname="SignUp" failonerror="true" fork="yes">
+    <target name="main.java.degrassi.views.client.SignUp">
+        <java classname="main.java.degrassi.views.client.SignUp" failonerror="true" fork="yes">
             <classpath refid="run.SignUp.classpath"/>
         </java>
     </target>

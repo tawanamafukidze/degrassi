@@ -1,30 +1,35 @@
+package main.java.degrassi.models;
+
+import main.java.degrassi.controllers.OrdersController;
+import main.java.degrassi.mysql.MYSQLConnector;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-public class Order {
+public class OrdersModel {
     private final String customerID;
     private String orderID;
     private String orderDate;
     private String status;
-    private ArrayList<Product> products;
+    private ArrayList<ProductModel> orderedProducts;
 
     private double sum;
     private final Connection db;
-    private Invoice invoice;
+    private InvoiceModel invoice;
 
     private PreparedStatement pst;
     private ResultSet result;
 
-    public Order(Connection con, String customerID) {
+    public OrdersModel(Connection con, String customerID) {
         //create a new order
         db = con;
         this.customerID = customerID;
     }
 
     //create instance of a queried order
-    public Order(
-            Connection con, String customerID, String orderID, String orderDate, ArrayList<Product> products,
+    public OrdersModel(
+            Connection con, String customerID, String orderID, String orderDate, ArrayList<ProductModel> products,
             double sum, String status
     ) {
         db = con;
@@ -32,48 +37,18 @@ public class Order {
         this.orderID = orderID;
         this.orderDate = orderDate;
         this.status = status;
-        this.products = products;
+        this.orderedProducts = products;
         this.sum = sum;
-        //invoice = new Invoice(this);
+        //invoice = new InvoiceModel(this);
     }
 
-    public boolean addNewOrder(ArrayList<Item> items) {
+    public boolean addNewOrder(ArrayList<CartItemModel> items) {
         orderDate = LocalDateTime.now().toString().replaceAll("T", " ");
-        try {
-            //create new customer order relationship
-            pst = db.prepareStatement("INSERT INTO customer_orders(customerID, status) VALUES (?,?)");
-            pst.setString(1, customerID);
-            pst.setString(2, "shipped");
-            pst.executeUpdate();
-
-            //fetch the id of the new order relationship
-            pst = db.prepareStatement(
-                    String.format("SELECT * FROM customer_orders WHERE customerID = '%s' " +
-                            "ORDER BY orderID DESC LIMIT 1", customerID)
+        if (OrdersController.addNewOrder(this, items)) {
+            invoice = new InvoiceModel(
+                    new OrdersModel(db, customerID, orderID, orderDate, orderedProducts, sum, "shipped")
             );
-            result = pst.executeQuery();
-            while (result.next()) {
-                orderID = result.getString("orderID");
-            }
-            System.out.println(orderID);
-            //add items to orders table with the fetched orderID
-            for (Item item : items) {
-                products.add(item.getProduct());
-                pst = db.prepareStatement(
-                        "INSERT INTO orders(orderID, customerID, productID, quantity, orderDate) " +
-                                "VALUES (?,?,?,?,?)"
-                );
-                pst.setString(1, orderID);
-                pst.setString(2, customerID);
-                pst.setString(3, item.getProduct().getId());
-                pst.setInt(4, item.getQuantity());
-                pst.setString(5, orderDate);
-                pst.executeUpdate();
-            }
-            invoice = new Invoice(new Order(db, customerID, orderID, orderDate, products, sum, status));
             return true;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
         }
         return false;
     }
@@ -82,8 +57,9 @@ public class Order {
         return sum;
     }
 
-    public ArrayList<Order> queryOrders() {
-        ArrayList<Order> queriedOrders = new ArrayList<>();
+    public ArrayList<OrdersModel> queryOrders() {
+        OrdersController.queryOrders(this);
+        ArrayList<OrdersModel> queriedOrders = new ArrayList<>();
         try {
             pst = db.prepareStatement(
                     String.format(
@@ -102,7 +78,7 @@ public class Order {
                 );
                 //pst.setFetchDirection(ResultSet.FETCH_REVERSE);
                 result = pst.executeQuery();
-                products = new ArrayList<>();
+                orderedProducts = new ArrayList<>();
                 double total = 0.0;
                 while (result.next()) {
                     orderDate = result.getString("orderDate");
@@ -112,16 +88,16 @@ public class Order {
                     String productType = result.getString("Type");
                     int productQuantity = result.getInt("Quantity");
                     double productPrice = result.getDouble("Price");
-                    Product myProduct = new Product(
+                    ProductModel myProduct = new ProductModel(
                             productTitle, productType, productPrice, productQuantity, productID
                     );
-                    products.add(myProduct);
+                    orderedProducts.add(myProduct);
                     total += (productQuantity * productPrice);
                     status = getStatus(orderID);
                 }
                 queriedOrders.add(
-                        new Order(
-                                db, customerID, orderID, orderDate, products, total, status
+                        new OrdersModel(
+                                db, customerID, orderID, orderDate, orderedProducts, total, status
                         )
                 );
 
@@ -160,32 +136,32 @@ public class Order {
     }
      */
 
+    public void setOrderID(String orderID) {
+        this.orderID = orderID;
+    }
+
     public String getOrderID() {
         return orderID;
+    }
+
+    public String getCustomerID() {
+        return customerID;
     }
 
     public String getOrderDate() {
         return orderDate;
     }
 
-    public ArrayList<Product> getProducts() {
-        return products;
+    public Connection DbConnection() {
+        return db;
+    }
+
+    public ArrayList<ProductModel> getOrderedProducts() {
+        return orderedProducts;
     }
 
     public String getStatus(String id) {
-        try {
-            PreparedStatement pst = db.prepareStatement(
-                    String.format("SELECT * FROM customer_orders WHERE orderID = '%s'", id)
-            );
-            ResultSet result = pst.executeQuery();
-            if (result.next()) {
-                status = result.getString("status");
-                return status;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return status;
+        return OrdersController.getStatus(db, id);
     }
 
     @Override
@@ -199,14 +175,14 @@ public class Order {
     }
 
     public static void main(String[] args) {
-        Connection con = new MYSQLConnection().getDBConnection();
-        ArrayList<Item> items = new ArrayList<>();
-        items.add(new Item("3", 1, new Product("Game", "Genre", 420.69, 10, "4")));
-        items.add(new Item("4", 1, new Product("Game2", "Genre", 420.69, 14, "5")));
-        items.add(new Item("5", 1, new Product("Game3", "Genre", 420.69, 14, "7")));
-        items.add(new Item("6", 1, new Product("Game4", "Genre", 420.69, 10, "1")));
-        items.add(new Item("7", 1, new Product("Game5", "Genre", 420.69, 10, "3")));
-        items.add(new Item("8", 1, new Product("Game6", "Genre", 420.69, 10, "8")));
-        System.out.println(new Order(con, "5").addNewOrder(items));
+        Connection con = new MYSQLConnector().getDBConnection();
+        ArrayList<CartItemModel> items = new ArrayList<>();
+        items.add(new CartItemModel("3", 1, new ProductModel("Game", "Genre", 420.69, 10, "4")));
+        items.add(new CartItemModel("4", 1, new ProductModel("Game2", "Genre", 420.69, 14, "5")));
+        items.add(new CartItemModel("5", 1, new ProductModel("Game3", "Genre", 420.69, 14, "7")));
+        items.add(new CartItemModel("6", 1, new ProductModel("Game4", "Genre", 420.69, 10, "1")));
+        items.add(new CartItemModel("7", 1, new ProductModel("Game5", "Genre", 420.69, 10, "3")));
+        items.add(new CartItemModel("8", 1, new ProductModel("Game6", "Genre", 420.69, 10, "8")));
+        System.out.println(new OrdersModel(con, "5").addNewOrder(items));
     }
 }

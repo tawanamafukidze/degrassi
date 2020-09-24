@@ -1,11 +1,13 @@
+package main.java.degrassi.mysql;
+
 import javax.swing.JOptionPane;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class MYSQLConnection {
+public class MYSQLConnector {
     private Connection con;
-    public MYSQLConnection() { //Using the method Connect() to connect to the database automatically without the need to use the method in every class
+    public MYSQLConnector() { //Using the method Connect() to connect to the database automatically without the need to use the method in every class
         connect();
     }
 
