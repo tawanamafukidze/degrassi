@@ -25,6 +25,8 @@ public class ShoppingCartController {
 
     public static ShoppingCartModel queryCart(Connection con, String customerID) {
         ArrayList<CartItemModel> cartItems = new ArrayList<>();
+        String cartID = queryCartID(con, customerID);
+
         String query = String.format(
                 "SELECT DISTINCT karts.KartID, CustomerID, kartline.id, kartline.gameID, kartline.Quantity,\n" +
                         "games.Title, games.Type, games.Price, games.Stock\n" +
@@ -36,9 +38,7 @@ public class ShoppingCartController {
         try {
             PreparedStatement pst = con.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
-            String cartID = "";
             while (rs.next()) {
-                cartID = rs.getString("kartID");
                 String itemID = rs.getString("id");
                 int itemQuantity = rs.getInt("Quantity");
                 String gameID = rs.getString("gameID");
@@ -85,7 +85,7 @@ public class ShoppingCartController {
             while (result.next()) {
                 itemFound = true;
                 con.prepareStatement(String.format("UPDATE kartline " +
-                                "SET quantity = %s " +
+                                "SET quantity = %d " +
                                 "WHERE kartID = %s AND gameID = %s",
                         item.getQuantity(), cartID, item.getProduct().getId())
                 ).executeUpdate();

@@ -213,6 +213,7 @@ public class ClientFunctions extends JFrame {
             }
         });
 
+
         JButton addtokart = new JButton("add to kart");
         addtokart.setBounds(146, 442, 177, 23);
         panel.add(addtokart);
@@ -366,12 +367,14 @@ public class ClientFunctions extends JFrame {
         panel_2.add(scrollPane_2);
 
         tblKart = new JTable();
-        tblKart.setModel(new DefaultTableModel(
-                new Object[][]{},
-                new String[]{
-                        "Title", "Quantity", "Price", "ID"
-                }
-        ));
+        tblKart.setModel(
+                new DefaultTableModel(
+                        new Object[][]{},
+                        new String[]{
+                                "Title", "Quantity", "Price", ""
+                        }
+                )
+        );
         tblKart.getTableHeader().setReorderingAllowed(false);
         scrollPane_2.setViewportView(tblKart);
 

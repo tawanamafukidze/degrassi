@@ -2,6 +2,7 @@ package main.java.degrassi.models.user;
 
 import main.java.degrassi.controllers.CustomerController;
 import main.java.degrassi.controllers.OrdersController;
+import main.java.degrassi.controllers.ShoppingCartController;
 import main.java.degrassi.models.AddressModel;
 import main.java.degrassi.models.CartItemModel;
 import main.java.degrassi.models.OrdersModel;
@@ -43,7 +44,7 @@ public class CustomerModel extends Person {
         CustomerController.queryCustomer(this, email, password);
         String customerID = getId();
         customerAddress = new AddressModel(dbConnection()).queryAddress(customerID);
-        customerCart = new ShoppingCartModel(dbConnection(), customerID).queryCart();
+        customerCart = new ShoppingCartModel(dbConnection(), getId()).queryCart();
         //user has logged in
         setActive(true);
     }
