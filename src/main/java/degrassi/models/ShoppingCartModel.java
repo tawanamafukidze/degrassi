@@ -9,7 +9,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 
 public class ShoppingCartModel {
-    private final ArrayList<CartItemModel> items;
+    private ArrayList<CartItemModel> cartItems;
     private String id;
     private final String customerID;
     private final Connection db;
@@ -17,13 +17,20 @@ public class ShoppingCartModel {
     public ShoppingCartModel(Connection connection, String customerID) {
         db = connection;
         this.customerID = customerID;
-        items = new ArrayList<>();
+        cartItems = new ArrayList<>();
         //create cart if not found
         if (!customerHasCart(customerID)) {
             ShoppingCartController.addNewCart(db, customerID);
         } else {
             queryKartID();
         }
+    }
+
+    public ShoppingCartModel(Connection connection, String customerID, String cartID, ArrayList<CartItemModel> cartItems) {
+        db = connection;
+        this.customerID = customerID;
+        id = cartID;
+        this.cartItems = cartItems;
     }
 
     private boolean customerHasCart(String customerID) {
@@ -35,10 +42,20 @@ public class ShoppingCartModel {
     }
 
     public void addToCart(CartItemModel item) {
+        //check if inventory has stock on item, else remove from cart and inform the user of insufficient stock
         if (storeHasStock(item, item.getQuantity())) {
+            //check if product had previously been added to the cart
+            for  (CartItemModel cartItem : cartItems) {
+                //update quantity of product in cart and return, otherwise add product to cart
+                if (cartItem.getProduct().getId().equals(item.getProduct().getId())) {
+                    item.setQuantity(item.getQuantity()+cartItem.getQuantity());
+                    updateCart(item);
+                    return;
+                }
+            }
             ShoppingCartController.addToCart(db, item, id);
         } else {
-            items.remove(item);
+            cartItems.remove(item);
             JOptionPane.showMessageDialog(null,
                     "Insufficient Stock: Failed to add " + item.getProduct().getProductTitle()
                             + " to your cart.\n" + "Please review the requested quantity.",
@@ -55,69 +72,56 @@ public class ShoppingCartModel {
         return GameController.hasStock(db, item, quantity);
     }
 
-    public void checkOut() {
-        ArrayList<CartItemModel> outOfStock = new ArrayList<>();
+    public boolean checkOut() {
         StringBuilder info = new StringBuilder("" +
                 "The following item(s) have been removed from your cart due to insufficient stock:\n"
         );
+        int cartItemLength = cartItems.size();
 
-        for (CartItemModel item : items) {
-            if (storeHasStock(item, item.getQuantity())) {
-                int newStock = item.getProduct().getStock() - item.getQuantity();
-                GameController.decreaseQuantity(db, newStock, item.getProduct().getId());
-            } else {
+        //adjust cart items' quantity is inventory is low or out of stock.
+        for (CartItemModel item : cartItems) {
+            if (!storeHasStock(item, item.getQuantity())) {
                 info.append(item.getProduct().getProductTitle()).append("\n");
-                outOfStock.add(item);
+                ShoppingCartController.removeFromCart(db, item.getId());
             }
         }
+        this.cartItems =  queryCart().cartItems; //fetch the new cart data from the database
 
-        if (outOfStock.size() > 0) {
+        //inform user on items removed if queried cart size has decreased.
+        if (cartItems.size() > cartItemLength) {
             JOptionPane.showMessageDialog(null,
                     info.toString(), "Cart Status", JOptionPane.INFORMATION_MESSAGE
             );
-            for (CartItemModel item : outOfStock) {
-                /*
-                String query = String.format("DELETE FROM kartline WHERE kartID = '%s' AND gameID = '%s'",
-                        id, item.getProduct().getId()
-                );
-                try {
-                    PreparedStatement pst = db.prepareStatement(query);
-                    pst.executeUpdate();
-                } catch (SQLException throwables) {
-                    throwables.printStackTrace();
-                }
-                */
-                ShoppingCartController.removeFromCart(db, item.getId());
-                items.remove(item);
-            }
         }
 
-        if (items.size() == 0) {
+        //if cart is empty, display an error message and return false
+        if (cartItems.size() == 0) {
             JOptionPane.showMessageDialog(null,
                     "Cannot proceed to checkout. Your cart seems to be empty.",
                     "Checkout Status",
                     JOptionPane.ERROR_MESSAGE
             );
-            return;
+            return false;
         }
-        OrdersModel myOrder = new OrdersModel(db, customerID);
-        boolean orderPlaced = myOrder.addNewOrder(items);
-        if (orderPlaced) {
+
+        //place order, decrease inventory and then empty customer's cart
+        if (new OrdersModel(db, customerID).addNewOrder(cartItems)) {
+            for (CartItemModel item : cartItems) {
+                int newStock = item.getProduct().getStock() - item.getQuantity();
+                GameController.decreaseQuantity(db, newStock, item.getProduct().getId());
+            }
             emptyCart();
             JOptionPane.showMessageDialog(null,
                     "Order has been placed.\n" +
                             "Current Status: processing."
             );
-        } else {
-            JOptionPane.showMessageDialog(null,
-                    "Could not place order. Please try again later.",
-                    "Order Status", JOptionPane.ERROR_MESSAGE
-            );
+            return true;
         }
+        return false;
     }
 
     public ShoppingCartModel queryCart() {
-        return ShoppingCartController.queryCart(this);
+        return ShoppingCartController.queryCart(db, customerID);
     }
 
     public void updateCart(CartItemModel item) {
@@ -133,14 +137,14 @@ public class ShoppingCartModel {
     }
 
     public ArrayList<CartItemModel> toArrayList() {
-        return items;
+        return cartItems;
     }
 
     @Override
     public String toString() {
         try {
             StringBuilder s = new StringBuilder();
-            for (CartItemModel item : items) {
+            for (CartItemModel item : cartItems) {
                 s.append(item.toString()).append('\n');
             }
             return s.toString();
@@ -164,8 +168,8 @@ public class ShoppingCartModel {
         return customerID;
     }
 
-    public ArrayList<CartItemModel> getItems() {
-        return items;
+    public ArrayList<CartItemModel> getCartItems() {
+        return cartItems;
     }
 
     public Connection DbConnection() {

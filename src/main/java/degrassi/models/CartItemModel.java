@@ -11,6 +11,10 @@ public class CartItemModel {
         this.product = product;
     }
 
+    public void setQuantity(int i) {
+        quantity = i;
+    }
+
     public String getId() {
         return id;
     }

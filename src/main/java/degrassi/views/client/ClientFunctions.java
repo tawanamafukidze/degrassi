@@ -228,12 +228,9 @@ public class ClientFunctions extends JFrame {
                         int stock = Integer.parseInt(tbl.getValueAt(selected, 2).toString());
                         double price = Double.parseDouble(tbl.getValueAt(selected, 3).toString());
                         String gameID = tblProducts.getModel().getValueAt(selected, 4).toString();
-
                         customer.getShoppingCart().addToCart(
-                                new CartItemModel(
-                                        "", (Integer) quantitySpinner.getValue(),
-                                        new ProductModel(game, type, price, stock, gameID)
-                                )
+                                new CartItemModel("", (Integer) quantitySpinner.getValue(),
+                                        new ProductModel(game, type, price, stock, gameID))
                         );
                         getCartItems();
                     }
@@ -403,15 +400,16 @@ public class ClientFunctions extends JFrame {
             @Override
             public void mousePressed(MouseEvent e) {
                 super.mousePressed(e);
-                long start = System.currentTimeMillis();
-                customer.checkOut();
-                while (System.currentTimeMillis() - start < 6000) {
-                    System.out.print("");
+                if (customer.checkOut()) {
+                    JOptionPane.showMessageDialog(panel_2,
+                            "Your order has been shipped.\n"
+                    );
+                } else {
+                    JOptionPane.showMessageDialog(panel_2,
+                            "Could not place order. Please try again later.",
+                            "Order Status", JOptionPane.ERROR_MESSAGE
+                    );
                 }
-
-                JOptionPane.showMessageDialog(null,
-                        "Your order has been shipped.\n"
-                );
                 loadGames();
                 getCartItems();
             }

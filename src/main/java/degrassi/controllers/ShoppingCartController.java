@@ -23,8 +23,8 @@ public class ShoppingCartController {
         }
     }
 
-    public static ShoppingCartModel queryCart(ShoppingCartModel cart) {
-        cart.getItems().clear();
+    public static ShoppingCartModel queryCart(Connection con, String customerID) {
+        ArrayList<CartItemModel> cartItems = new ArrayList<>();
         String query = String.format(
                 "SELECT DISTINCT karts.KartID, CustomerID, kartline.id, kartline.gameID, kartline.Quantity,\n" +
                         "games.Title, games.Type, games.Price, games.Stock\n" +
@@ -32,12 +32,13 @@ public class ShoppingCartController {
                         "INNER JOIN kartline\n" +
                         "ON karts.kartID = kartline.KartID AND karts.CustomerID = '%s'\n" +
                         "INNER JOIN games\n" +
-                        "ON kartline.gameID = games.gameID", cart.getCustomerID());
+                        "ON kartline.gameID = games.gameID", customerID);
         try {
-            PreparedStatement pst = cart.DbConnection().prepareStatement(query);
+            PreparedStatement pst = con.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
+            String cartID = "";
             while (rs.next()) {
-                cart.setID(rs.getString("kartID"));
+                cartID = rs.getString("kartID");
                 String itemID = rs.getString("id");
                 int itemQuantity = rs.getInt("Quantity");
                 String gameID = rs.getString("gameID");
@@ -49,37 +50,13 @@ public class ShoppingCartController {
                 CartItemModel item = new CartItemModel(
                         itemID, itemQuantity, new ProductModel(title, type, price, stock, gameID)
                 );
-                cart.getItems().add(item);
+                cartItems.add(item);
             }
-            return cart;
+            return new ShoppingCartModel(con, customerID, cartID, cartItems);
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return null;
-    }
-
-    public static boolean customerHasCart(Connection con, String customerID) {
-        String query = String.format("SELECT * FROM karts WHERE customerID = '%s'", customerID);
-        try {
-            PreparedStatement pst = con.prepareStatement(query);
-            ResultSet result = pst.executeQuery();
-            if (result.next()) {
-                return true;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return false;
-    }
-
-    public static void emptyCart(Connection con, String id) {
-        String query = String.format("DELETE FROM kartline where kartID = '%s'", id);
-        try {
-            PreparedStatement pst = con.prepareStatement(query);
-            pst.executeUpdate();
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
     }
 
     public static void addToCart(Connection db, CartItemModel item, String kartID) {
@@ -92,16 +69,6 @@ public class ShoppingCartController {
             pst.setInt(3, item.getQuantity());
             pst.executeUpdate();
             JOptionPane.showMessageDialog(null, "Item has been added to your cart.");
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-    }
-
-    public static void removeFromCart(Connection con, String itemID) {
-        String query = String.format("DELETE FROM kartline WHERE id = '%s'", itemID);
-        try {
-            PreparedStatement pst = con.prepareStatement(query);
-            pst.executeUpdate();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
@@ -143,6 +110,26 @@ public class ShoppingCartController {
         }
     }
 
+    public static void removeFromCart(Connection con, String itemID) {
+        String query = String.format("DELETE FROM kartline WHERE id = '%s'", itemID);
+        try {
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
+    public static void emptyCart(Connection con, String id) {
+        String query = String.format("DELETE FROM kartline where kartID = '%s'", id);
+        try {
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.executeUpdate();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+    }
+
     public static String queryCartID(Connection db, String customerID) {
         String query = String.format(
                 "SELECT * FROM karts WHERE customerID = %S", customerID);
@@ -150,12 +137,26 @@ public class ShoppingCartController {
             PreparedStatement pst = db.prepareStatement(query);
             ResultSet rs = pst.executeQuery();
 
-            while (rs.next()) {
+            if (rs.next()) {
                 return rs.getString("kartID");
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
         return null;
+    }
+
+    public static boolean customerHasCart(Connection con, String customerID) {
+        String query = String.format("SELECT * FROM karts WHERE customerID = '%s'", customerID);
+        try {
+            PreparedStatement pst = con.prepareStatement(query);
+            ResultSet result = pst.executeQuery();
+            if (result.next()) {
+                return true;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 }

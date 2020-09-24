@@ -16,7 +16,7 @@ public class InvoiceModel {
         issueDate = LocalDateTime.now().toString().replaceAll("T", " ").substring(0, 19);
         products = order.getOrderedProducts();
         id = order.getOrderID();
-        sum = order.getSum();
+        sum = order.getTotal();
     }
 
     public String getId() {

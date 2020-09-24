@@ -14,34 +14,33 @@ public class OrdersController {
     private OrdersController() {
     }
 
-    public static boolean addNewOrder(OrdersModel order, ArrayList<CartItemModel> items) {
+    public static boolean addNewOrder(OrdersModel order, ArrayList<CartItemModel> cartItems) {
         PreparedStatement pst;
         //create new customer order relationship
+        double cartTotal = OrdersModel.calculateTotal(cartItems);
         try {
-            pst = order.DbConnection()
-                    .prepareStatement("INSERT INTO customer_orders(customerID, status, total) VALUES (?,?,?)")
-            ;
+            pst = order.DbConnection().prepareStatement(
+                    "INSERT INTO customer_orders(customerID, status, total) VALUES (?,?,?)"
+            );
             pst.setString(1, order.getCustomerID());
             pst.setString(2, "shipped");
-            double total = 0.0;
-            for (CartItemModel item : items) {
-                total += (item.getProduct().getPrice() * item.getQuantity());
-            }
-            pst.setDouble(3, total);
+            pst.setDouble(3, cartTotal);
             pst.executeUpdate();
 
             //fetch the id of the new order relationship
             pst = order.DbConnection().prepareStatement(
-                    String.format("SELECT * FROM customer_orders WHERE customerID = '%s' " +
-                            "ORDER BY orderID DESC LIMIT 1", order.getCustomerID())
+                    String.format(
+                            "SELECT * FROM customer_orders WHERE customerID = '%s' " +
+                                    "ORDER BY orderID DESC LIMIT 1", order.getCustomerID()
+                    )
             );
             ResultSet result = pst.executeQuery();
-            while (result.next()) {
+            if (result.next()) {
                 order.setOrderID(result.getString("orderID"));
-            }
-            System.out.println(order.getOrderID());
+            } else {return false;} //no order ID found
+
             //add items to orders table with the fetched orderID
-            for (CartItemModel item : items) {
+            for (CartItemModel item : cartItems) {
                 pst = order.DbConnection().prepareStatement(
                         "INSERT INTO orders(orderID, customerID, productID, quantity, orderDate) " +
                                 "VALUES (?,?,?,?,?)"
@@ -54,39 +53,40 @@ public class OrdersController {
                 pst.executeUpdate();
                 order.getOrderedProducts().add(item.getProduct());
             }
-            return true;
+            return true; //new order made
         } catch (SQLException throwables) {
             throwables.printStackTrace();
         }
-        return false;
+        return false; //order could not be made
     }
 
-    public static ArrayList<OrdersModel> queryOrders(OrdersModel order) {
+    public static ArrayList<OrdersModel> queryOrders(Connection con, String customerID) {
         ArrayList<OrdersModel> queriedOrders = new ArrayList<>();
         try {
-            PreparedStatement pst = order.DbConnection().prepareStatement(
+            PreparedStatement pst = con.prepareStatement(
                     String.format(
                             "SELECT * FROM customer_orders WHERE customerID = '%s' ORDER BY orderID DESC",
-                            order.getCustomerID()
+                            customerID
                     )
             );
             ResultSet orderIdQuery = pst.executeQuery();
             while (orderIdQuery.next()) {
-                pst = order.DbConnection().prepareStatement(String.format(
+                String orderID = orderIdQuery.getString("orderID");
+                pst = con.prepareStatement(String.format(
                         "SELECT orders.orderID, orderDate, productID, Title, Type, Price, Quantity, total " +
-                                "FROM orders "+
+                                "FROM orders " +
                                 "INNER JOIN games ON productID = gameID " +
                                 "INNER JOIN customer_orders ON customer_orders.orderID = orders.orderID " +
                                 "WHERE customerID = %s AND orderID = %s " +
                                 "ORDER BY orderDate DESC",
-                        order.getCustomerID(), orderIdQuery.getString("orderID"))
+                        customerID, orderID)
                 );
                 ResultSet result = pst.executeQuery();
-                ArrayList<OrdersModel> orderedProducts = new ArrayList<>();
+                ArrayList<ProductModel> orderedProducts = new ArrayList<>();
                 double total = -1.0;
+                String orderDate = "";
                 while (result.next()) {
-                    String orderDate = result.getString("orderDate");
-                    String orderID = result.getString("orderID");
+                    orderDate = result.getString("orderDate");
                     String productID = result.getString("productID");
                     String productTitle = result.getString("Title");
                     String productType = result.getString("Type");
@@ -99,13 +99,13 @@ public class OrdersController {
                     ProductModel orderedProduct = new ProductModel(
                             productTitle, productType, productPrice, productQuantity, productID
                     );
-                    order.getOrderedProducts().add(orderedProduct);
+                    orderedProducts.add(orderedProduct);
                 }
                 queriedOrders.add(
                         new OrdersModel(
-                                order.DbConnection(), order.getCustomerID(), order.getOrderID(),
-                                orderDate, order.getOrderedProducts(), total,
-                                order.getStatus(order.getOrderID())
+                                con, customerID, orderID,
+                                orderDate, orderedProducts, total,
+                                getStatus(con, orderID)
                         )
                 );
             }

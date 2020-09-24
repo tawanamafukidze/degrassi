@@ -1,6 +1,7 @@
 package main.java.degrassi.models;
 
 import main.java.degrassi.controllers.OrdersController;
+import main.java.degrassi.controllers.ShoppingCartController;
 import main.java.degrassi.mysql.MYSQLConnector;
 
 import java.sql.*;
@@ -14,7 +15,7 @@ public class OrdersModel {
     private String status;
     private ArrayList<ProductModel> orderedProducts;
 
-    private double sum;
+    private double total;
     private final Connection db;
     private InvoiceModel invoice;
 
@@ -38,7 +39,7 @@ public class OrdersModel {
         this.orderDate = orderDate;
         this.status = status;
         this.orderedProducts = products;
-        this.sum = sum;
+        this.total = sum;
         //invoice = new InvoiceModel(this);
     }
 
@@ -46,67 +47,19 @@ public class OrdersModel {
         orderDate = LocalDateTime.now().toString().replaceAll("T", " ");
         if (OrdersController.addNewOrder(this, items)) {
             invoice = new InvoiceModel(
-                    new OrdersModel(db, customerID, orderID, orderDate, orderedProducts, sum, "shipped")
+                    new OrdersModel(db, customerID, orderID, orderDate, orderedProducts, total, "shipped")
             );
             return true;
         }
         return false;
     }
 
-    public double getSum() {
-        return sum;
+    public double getTotal() {
+        return total;
     }
 
     public ArrayList<OrdersModel> queryOrders() {
-        OrdersController.queryOrders(this);
-        ArrayList<OrdersModel> queriedOrders = new ArrayList<>();
-        try {
-            pst = db.prepareStatement(
-                    String.format(
-                            "SELECT * FROM customer_orders WHERE customerID = '%s' ORDER BY orderID DESC", customerID
-                    )
-            );
-            ResultSet orderIdQuery = pst.executeQuery();
-            while (orderIdQuery.next()) {
-                pst = db.prepareStatement(String.format(
-                        "SELECT orderID, orderDate, productID, Title, Type, Price, Quantity FROM orders " +
-                                "INNER JOIN games ON productID = gameID " +
-                                "WHERE customerID = %s AND orderID = %s " +
-                                "ORDER BY orderDate DESC",
-                        customerID, orderIdQuery.getString("orderID")
-                        )
-                );
-                //pst.setFetchDirection(ResultSet.FETCH_REVERSE);
-                result = pst.executeQuery();
-                orderedProducts = new ArrayList<>();
-                double total = 0.0;
-                while (result.next()) {
-                    orderDate = result.getString("orderDate");
-                    orderID = result.getString("orderID");
-                    String productID = result.getString("productID");
-                    String productTitle = result.getString("Title");
-                    String productType = result.getString("Type");
-                    int productQuantity = result.getInt("Quantity");
-                    double productPrice = result.getDouble("Price");
-                    ProductModel myProduct = new ProductModel(
-                            productTitle, productType, productPrice, productQuantity, productID
-                    );
-                    orderedProducts.add(myProduct);
-                    total += (productQuantity * productPrice);
-                    status = getStatus(orderID);
-                }
-                queriedOrders.add(
-                        new OrdersModel(
-                                db, customerID, orderID, orderDate, orderedProducts, total, status
-                        )
-                );
-
-            }
-            return queriedOrders;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return null;
+        return OrdersController.queryOrders(db, customerID);
     }
 
     /*
@@ -135,6 +88,18 @@ public class OrdersModel {
         return false;
     }
      */
+
+    public static double calculateTotal(ArrayList<CartItemModel> items) {
+        double total = 0.0;
+        for (CartItemModel item : items) {
+            total += (item.getProduct().getPrice() * item.getQuantity());
+        }
+        return total;
+    }
+
+    public void setOrderedProducts(ArrayList<ProductModel> orderedProducts) {
+        this.orderedProducts = orderedProducts;
+    }
 
     public void setOrderID(String orderID) {
         this.orderID = orderID;
@@ -170,7 +135,7 @@ public class OrdersModel {
                 "customerID=" + customerID +
                 ", orderID=" + orderID +
                 ", orderDate='" + orderDate + '\'' +
-                ", sum=" + sum +
+                ", total=" + total +
                 '}';
     }
 

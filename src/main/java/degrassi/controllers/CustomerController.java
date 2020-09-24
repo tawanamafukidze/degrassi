@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class CustomerController {
     private CustomerController() {}
 
-    public static String addCustomer(CustomerModel customer) {
+    public static String addNewCustomer(CustomerModel customer) {
         try {
             PreparedStatement pst = customer.dbConnection().prepareStatement(
                     "Insert into Customers(FirstName, Surname, EmailAddress,Password,PhoneNumber) " +
@@ -52,46 +52,6 @@ public class CustomerController {
                 queriedIDs.add(result.getString("customerID"));
             }
             return queriedIDs;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-            return null;
-        }
-    }
-
-    public static ArrayList<CustomerModel> queryCustomers(Connection con) {
-        PreparedStatement pst;
-        ArrayList<CustomerModel> queriedCustomers;
-        CustomerModel customer;
-        try {
-            pst = con.prepareStatement("select * from customers");
-            ResultSet result = pst.executeQuery();
-            queriedCustomers = new ArrayList<>();
-            while (result.next()) {
-                customer = new CustomerModel(con);
-                String firstName = result.getString("FirstName");
-                String lastName = result.getString("Surname");
-                String phone = result.getString("PhoneNumber");
-                String email = result.getString("EmailAddress");
-
-                customer.setId(result.getString("CustomerID"));
-                customer.setFirstName(firstName);
-                customer.setLastName(lastName);
-                customer.setEmail(email);
-                customer.setPhone(phone);
-                customer.setActive(true);
-                AddressModel customerAddress = new AddressModel(con).queryAddress(customer.getId());
-                if (customerAddress == null) {
-                    customer.setCustomerAddress(
-                            new AddressModel(con, "N/A", "   ", "   ", "   ")
-                    );
-                } else {
-                    customer.setCustomerAddress(customerAddress);
-                }
-                ShoppingCartModel customerCart = new ShoppingCartModel(con, customer.getId()).queryCart();
-                customer.setCustomerCart(customerCart);
-                queriedCustomers.add(customer);
-            }
-            return queriedCustomers;
         } catch (SQLException throwables) {
             throwables.printStackTrace();
             return null;
@@ -156,6 +116,46 @@ public class CustomerController {
             throwables.printStackTrace();
         }
         return null;
+    }
+
+    public static ArrayList<CustomerModel> queryCustomers(Connection con) {
+        PreparedStatement pst;
+        ArrayList<CustomerModel> queriedCustomers;
+        CustomerModel customer;
+        try {
+            pst = con.prepareStatement("select * from customers");
+            ResultSet result = pst.executeQuery();
+            queriedCustomers = new ArrayList<>();
+            while (result.next()) {
+                customer = new CustomerModel(con);
+                String firstName = result.getString("FirstName");
+                String lastName = result.getString("Surname");
+                String phone = result.getString("PhoneNumber");
+                String email = result.getString("EmailAddress");
+
+                customer.setId(result.getString("CustomerID"));
+                customer.setFirstName(firstName);
+                customer.setLastName(lastName);
+                customer.setEmail(email);
+                customer.setPhone(phone);
+                customer.setActive(true);
+                AddressModel customerAddress = new AddressModel(con).queryAddress(customer.getId());
+                if (customerAddress == null) {
+                    customer.setCustomerAddress(
+                            new AddressModel(con, "N/A", "   ", "   ", "   ")
+                    );
+                } else {
+                    customer.setCustomerAddress(customerAddress);
+                }
+                ShoppingCartModel customerCart = new ShoppingCartModel(con, customer.getId()).queryCart();
+                customer.setCustomerCart(customerCart);
+                queriedCustomers.add(customer);
+            }
+            return queriedCustomers;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
     }
 
     public static void main(String[] args) {

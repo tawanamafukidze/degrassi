@@ -10,7 +10,22 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class GameController {
-    private GameController() {
+    private GameController() {}
+
+    public static boolean addToInventory(Connection con, String title, String type, int stock, double price) {
+        PreparedStatement pst;
+        try {
+            pst = con.prepareStatement("Insert into games( Title, Type, Stock, Price) Values(?,?,?,?)");
+            pst.setString(1, title);
+            pst.setString(2, type);
+            pst.setInt(3, stock);
+            pst.setDouble(4, price);
+            pst.executeUpdate();
+            return true;
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+        return false;
     }
 
     public static ArrayList<ProductModel> queryGames(Connection con) {
@@ -32,22 +47,6 @@ public class GameController {
             return null;
         }
         return queriedProducts;
-    }
-
-    public static boolean addToInventory(Connection con, String title, String type, int stock, double price) {
-        PreparedStatement pst;
-        try {
-            pst = con.prepareStatement("Insert into games( Title, Type, Stock, Price) Values(?,?,?,?)");
-            pst.setString(1, title);
-            pst.setString(2, type);
-            pst.setInt(3, stock);
-            pst.setDouble(4, price);
-            pst.executeUpdate();
-            return true;
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        }
-        return false;
     }
 
     public static boolean updateGame(Connection con, String id, String title, String type, int stock, double price) {

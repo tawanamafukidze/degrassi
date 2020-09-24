@@ -1,7 +1,7 @@
 package main.java.degrassi.models.user;
 
 import main.java.degrassi.controllers.CustomerController;
-import main.java.degrassi.controllers.ShoppingCartController;
+import main.java.degrassi.controllers.OrdersController;
 import main.java.degrassi.models.AddressModel;
 import main.java.degrassi.models.CartItemModel;
 import main.java.degrassi.models.OrdersModel;
@@ -33,9 +33,9 @@ public class CustomerModel extends Person {
         super(con);
     }
 
-    //commit to db and return the id of the newly added customer
+    //addNewAddress to db and return the id of the newly added customer
     public String db_commit() {
-        return CustomerController.addCustomer(this);
+        return CustomerController.addNewCustomer(this);
     }
 
     //User fetch upon correct login information
@@ -65,12 +65,15 @@ public class CustomerModel extends Person {
         return customerCart.queryCart();
     }
 
-    public void checkOut() {
+    public boolean checkOut() {
         try {
-            customerCart.checkOut();
-            customerOrders = new OrdersModel(dbConnection(), getId()).queryOrders();
+            if (customerCart.checkOut()) {
+                customerOrders = OrdersController.queryOrders(dbConnection(), getId());
+                return true;
+            }
         } catch (NullPointerException ignored) {
         }
+        return false;
     }
 
     public void removeFromCart(String itemID) {
@@ -97,8 +100,8 @@ public class CustomerModel extends Person {
         this.customerCart = customerCart;
     }
 
-    public void setCustomerOrders(ArrayList<OrdersModel> customerOrders) {
-        this.customerOrders = customerOrders;
+    public ArrayList<OrdersModel> getCustomerOrders() {
+        return customerOrders;
     }
 
     public AddressModel getCustomerAddress() {

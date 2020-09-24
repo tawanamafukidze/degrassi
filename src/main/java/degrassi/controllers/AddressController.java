@@ -1,7 +1,6 @@
 package main.java.degrassi.controllers;
 
 import main.java.degrassi.models.AddressModel;
-import main.java.degrassi.models.user.CustomerModel;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +10,7 @@ import java.sql.SQLException;
 public class AddressController {
     private AddressController() {}
 
-    public static void commit(AddressModel address, String customer_id) {
+    public static void addNewAddress(AddressModel address, String customer_id) {
         try {
             PreparedStatement pst = address.getDb().prepareStatement(
                     "Insert into Address(State, City, PostalCode, Street, CustomerID) Values(?,?,?,?,?)"

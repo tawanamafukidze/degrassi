@@ -67,7 +67,7 @@ public class AddressModel {
             );
             return;
         }
-        AddressController.commit(this, customer_id);
+        AddressController.addNewAddress(this, customer_id);
     }
 
     //checks if provided field is within the input limit and returns true, otherwise false.
