@@ -23,7 +23,7 @@ public class OrdersController {
                     "INSERT INTO customer_orders(customerID, status, total) VALUES (?,?,?)"
             );
             pst.setString(1, order.getCustomerID());
-            pst.setString(2, "shipped");
+            pst.setString(2, "processing");
             pst.setDouble(3, cartTotal);
             pst.executeUpdate();
 
@@ -60,7 +60,7 @@ public class OrdersController {
         return false; //order could not be made
     }
 
-    public static ArrayList<OrdersModel> queryOrders(Connection con, String customerID) {
+    public static ArrayList<OrdersModel>queryOrders(Connection con, String customerID) {
         ArrayList<OrdersModel> queriedOrders = new ArrayList<>();
         try {
             PreparedStatement pst = con.prepareStatement(
@@ -77,7 +77,7 @@ public class OrdersController {
                                 "FROM orders " +
                                 "INNER JOIN games ON productID = gameID " +
                                 "INNER JOIN customer_orders ON customer_orders.orderID = orders.orderID " +
-                                "WHERE customerID = %s AND orderID = %s " +
+                                "WHERE orders.customerID = %s AND orders.orderID = %s " +
                                 "ORDER BY orderDate DESC",
                         customerID, orderID)
                 );

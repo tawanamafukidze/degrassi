@@ -7,6 +7,7 @@ import main.java.degrassi.mysql.MYSQLConnector;
 import javax.swing.*;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class ShoppingCartModel {
     private ArrayList<CartItemModel> cartItems;
@@ -45,15 +46,25 @@ public class ShoppingCartModel {
         //check if inventory has stock on item, else remove from cart and inform the user of insufficient stock
         if (storeHasStock(item, item.getQuantity())) {
             //check if product had previously been added to the cart
-            for  (CartItemModel cartItem : cartItems) {
+            for (CartItemModel cartItem : cartItems) {
                 //update quantity of product in cart and return, otherwise add product to cart
                 if (cartItem.getProduct().getId().equals(item.getProduct().getId())) {
-                    item.setQuantity(item.getQuantity()+cartItem.getQuantity());
-                    updateCart(item);
-                    return;
+                    if (storeHasStock(item, item.getQuantity() + cartItem.getQuantity())) {
+                        item.setQuantity(item.getQuantity() + cartItem.getQuantity());
+                        updateCart(item);
+                    } else {
+                        cartItems.remove(item);
+                        JOptionPane.showMessageDialog(null,
+                                "Insufficient Stock: Failed to add " + item.getProduct().getProductTitle()
+                                        + " to your cart.\n" + "Please review the requested quantity.",
+                                "Cart Status", JOptionPane.ERROR_MESSAGE
+                        );
+                        return;
+                    }
                 }
             }
             ShoppingCartController.addToCart(db, item, id);
+            cartItems = queryCart().cartItems;
         } else {
             cartItems.remove(item);
             JOptionPane.showMessageDialog(null,
@@ -76,31 +87,26 @@ public class ShoppingCartModel {
         StringBuilder info = new StringBuilder("" +
                 "The following item(s) have been removed from your cart due to insufficient stock:\n"
         );
-        int cartItemLength = cartItems.size();
+        int initialCartSize = cartItems.size();
 
-        //adjust cart items' quantity is inventory is low or out of stock.
+        //adjust cart items' quantity if inventory is low or out of stock.
         for (CartItemModel item : cartItems) {
             if (!storeHasStock(item, item.getQuantity())) {
                 info.append(item.getProduct().getProductTitle()).append("\n");
                 ShoppingCartController.removeFromCart(db, item.getId());
             }
         }
-        this.cartItems =  queryCart().cartItems; //fetch the new cart data from the database
-
         //inform user on items removed if queried cart size has decreased.
-        if (cartItems.size() > cartItemLength) {
+        //gets size new cart instance and compares it to the initial cart size
+        if (queryCart().cartItems.size() != initialCartSize) {
             JOptionPane.showMessageDialog(null,
                     info.toString(), "Cart Status", JOptionPane.INFORMATION_MESSAGE
             );
+            queryCart(); //fetch the new cart data from the database
         }
 
         //if cart is empty, display an error message and return false
         if (cartItems.size() == 0) {
-            JOptionPane.showMessageDialog(null,
-                    "Cannot proceed to checkout. Your cart seems to be empty.",
-                    "Checkout Status",
-                    JOptionPane.ERROR_MESSAGE
-            );
             return false;
         }
 
@@ -111,17 +117,21 @@ public class ShoppingCartModel {
                 GameController.decreaseQuantity(db, newStock, item.getProduct().getId());
             }
             emptyCart();
-            JOptionPane.showMessageDialog(null,
-                    "Order has been placed.\n" +
-                            "Current Status: processing."
-            );
             return true;
         }
         return false;
     }
 
     public ShoppingCartModel queryCart() {
-        return ShoppingCartController.queryCart(db, customerID);
+        ArrayList<CartItemModel> queriedCart = Objects.requireNonNull(
+                ShoppingCartController.queryCart(db, customerID)
+        ).cartItems;
+        if (queriedCart.size() == 0) {
+            cartItems.clear();
+        } else {
+            cartItems = queriedCart;
+        }
+        return this;
     }
 
     public void updateCart(CartItemModel item) {
@@ -151,17 +161,6 @@ public class ShoppingCartModel {
         } catch (NullPointerException ignored) {
         }
         return "";
-    }
-
-    public static void main(String[] args) {
-        Connection con = new MYSQLConnector().getDBConnection();
-        ShoppingCartModel myCart = new ShoppingCartModel(con, "6");
-        System.out.println(myCart.queryCart());
-        myCart.updateCart(
-                new CartItemModel("5", 3, new ProductModel("Fifa", "sport", 200.0, 3, "12"))
-        );
-        myCart.queryCart();
-        myCart.checkOut();
     }
 
     public String getCustomerID() {

@@ -157,11 +157,4 @@ public class CustomerController {
             return null;
         }
     }
-
-    public static void main(String[] args) {
-        ArrayList<CustomerModel> c = CustomerController.queryCustomers(new MYSQLConnector().getDBConnection());
-        for (CustomerModel customer : c){
-            System.out.println(customer.toString());
-        }
-    }
 }

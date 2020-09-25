@@ -389,7 +389,6 @@ public class ClientFunctions extends JFrame {
 
                         int selected = tblKart.getSelectedRow();
                         String itemID = tblKart.getModel().getValueAt(selected, 3).toString();
-                        System.out.println(itemID);
                         customer.removeFromCart(itemID);
                         getCartItems();
                     }
@@ -405,7 +404,14 @@ public class ClientFunctions extends JFrame {
                 super.mousePressed(e);
                 if (customer.checkOut()) {
                     JOptionPane.showMessageDialog(panel_2,
-                            "Your order has been shipped.\n"
+                            "Order has been placed.\n" +
+                                    "Current Status: processing."
+                    );
+                } else if (customer.getShoppingCart().getCartItems().size() == 0) {
+                    JOptionPane.showMessageDialog(null,
+                            "Cannot proceed to checkout. Your cart seems to be empty.",
+                            "Checkout Status",
+                            JOptionPane.ERROR_MESSAGE
                     );
                 } else {
                     JOptionPane.showMessageDialog(panel_2,
@@ -445,5 +451,6 @@ public class ClientFunctions extends JFrame {
             cartModel.addRow(itemDetails);
         }
         tblKart.setVisible(true);
+        setVisible(true);
     }
 }

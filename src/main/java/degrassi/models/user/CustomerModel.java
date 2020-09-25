@@ -17,7 +17,9 @@ public class CustomerModel extends Person {
     private ArrayList<OrdersModel> customerOrders;
 
     //Creates a new user instance and verifies the information provided by the client before committing to the the DB
-    public CustomerModel(Connection con, String firstName, String lastName, String email, String password, String phone) {
+    public CustomerModel(
+            Connection con, String firstName, String lastName, String email, String password, String phone
+    ) {
         super(con, firstName, lastName, email, password, phone);
     }
 
@@ -40,7 +42,7 @@ public class CustomerModel extends Person {
     }
 
     //User fetch upon correct login information
-    public void login(String email, String password) {
+    private void login(String email, String password) {
         CustomerController.queryCustomer(this, email, password);
         String customerID = getId();
         customerAddress = new AddressModel(dbConnection()).queryAddress(customerID);
@@ -49,17 +51,8 @@ public class CustomerModel extends Person {
         setActive(true);
     }
 
-    public static ArrayList<String> queryCustomerIDs(Connection con) {
-        return CustomerController.queryCustomerIDs(con);
-    }
-
     public ArrayList<CustomerModel> queryCustomers() {
         return CustomerController.queryCustomers(dbConnection());
-    }
-
-    //query the customer by the provided id
-    public CustomerModel queryCustomerByID(String id) {
-        return CustomerController.queryCustomerByID(dbConnection(), id);
     }
 
     public ShoppingCartModel getShoppingCart() {

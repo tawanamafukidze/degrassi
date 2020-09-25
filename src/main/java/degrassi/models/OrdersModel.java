@@ -26,6 +26,7 @@ public class OrdersModel {
         //create a new order
         db = con;
         this.customerID = customerID;
+        orderedProducts = new ArrayList<>();
     }
 
     //create instance of a queried order
@@ -47,7 +48,7 @@ public class OrdersModel {
         orderDate = LocalDateTime.now().toString().replaceAll("T", " ");
         if (OrdersController.addNewOrder(this, items)) {
             invoice = new InvoiceModel(
-                    new OrdersModel(db, customerID, orderID, orderDate, orderedProducts, total, "shipped")
+                    new OrdersModel(db, customerID, orderID, orderDate, orderedProducts, total, "processing")
             );
             return true;
         }
@@ -137,17 +138,5 @@ public class OrdersModel {
                 ", orderDate='" + orderDate + '\'' +
                 ", total=" + total +
                 '}';
-    }
-
-    public static void main(String[] args) {
-        Connection con = new MYSQLConnector().getDBConnection();
-        ArrayList<CartItemModel> items = new ArrayList<>();
-        items.add(new CartItemModel("3", 1, new ProductModel("Game", "Genre", 420.69, 10, "4")));
-        items.add(new CartItemModel("4", 1, new ProductModel("Game2", "Genre", 420.69, 14, "5")));
-        items.add(new CartItemModel("5", 1, new ProductModel("Game3", "Genre", 420.69, 14, "7")));
-        items.add(new CartItemModel("6", 1, new ProductModel("Game4", "Genre", 420.69, 10, "1")));
-        items.add(new CartItemModel("7", 1, new ProductModel("Game5", "Genre", 420.69, 10, "3")));
-        items.add(new CartItemModel("8", 1, new ProductModel("Game6", "Genre", 420.69, 10, "8")));
-        System.out.println(new OrdersModel(con, "5").addNewOrder(items));
     }
 }

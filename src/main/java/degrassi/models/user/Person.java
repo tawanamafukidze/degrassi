@@ -108,7 +108,7 @@ public abstract class Person {
 
     private boolean emailUnique(String email) {
         try {
-            String query = String.format("SELECT * FROM Customers WHERE EmailAddress = '%s'", email);
+            String query = String.format("SELECT EmailAddress FROM Customers WHERE EmailAddress = '%s'", email);
             PreparedStatement p = db.prepareCall(query);
             ResultSet result = p.executeQuery();
             if (result.next()) {

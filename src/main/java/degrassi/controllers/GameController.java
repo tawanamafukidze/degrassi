@@ -9,6 +9,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import static main.java.degrassi.Degrassi.debug;
+
 public class GameController {
     private GameController() {}
 
@@ -90,6 +92,7 @@ public class GameController {
             if (result.next()) {
                 returnedStock = result.getInt("stock");
             }
+            debug(returnedStock + " " + quantity);
             return returnedStock >= quantity;
         } catch (SQLException throwables) {
             throwables.printStackTrace();

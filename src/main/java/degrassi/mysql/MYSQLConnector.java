@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import static main.java.degrassi.Degrassi.debug;
+
 public class MYSQLConnector {
     private Connection con;
     public MYSQLConnector() { //Using the method Connect() to connect to the database automatically without the need to use the method in every class
@@ -37,7 +39,7 @@ public class MYSQLConnector {
                     "Dependency Error", JOptionPane.ERROR_MESSAGE);
             System.exit(1);
         }
-        System.out.println("Connection Successful");
+        debug("Connection Successful");
     }
 
     public Connection getDBConnection() {  //used to return the value of the connection
