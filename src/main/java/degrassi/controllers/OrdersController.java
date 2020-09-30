@@ -104,8 +104,7 @@ public class OrdersController {
                 queriedOrders.add(
                         new OrdersModel(
                                 con, customerID, orderID,
-                                orderDate, orderedProducts, total,
-                                getStatus(con, orderID)
+                                orderDate, orderedProducts, total
                         )
                 );
             }

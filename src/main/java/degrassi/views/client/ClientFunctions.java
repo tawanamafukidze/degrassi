@@ -3,20 +3,13 @@ package main.java.degrassi.views.client;
 import main.java.degrassi.models.CartItemModel;
 import main.java.degrassi.models.ProductModel;
 import main.java.degrassi.models.user.CustomerModel;
-import main.java.degrassi.mysql.MYSQLConnector;
-import main.java.degrassi.views.admin.AdminSearch;
 
-import java.awt.EventQueue;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.*;
 import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Color;
@@ -26,33 +19,15 @@ import javax.swing.table.TableRowSorter;
 public class ClientFunctions extends JFrame {
 
     private final CustomerModel customer;
-    private JTable Customers;
-    private JTable tblProducts;
+    private final JTable Customers;
+    private final JTable tblProducts;
     Connection con;
 
-    PreparedStatement pst;
     DefaultTableModel tbl;
     DefaultTableModel utbl;
-    private JTable tblKart;
+    private final JTable tblKart;
     private int maxSpinnerValue;
 
-
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            try {
-                Connection con = new MYSQLConnector().getDBConnection();
-                ClientFunctions frame = new ClientFunctions(
-                        con, new CustomerModel(con, "test@gmail.com", "pass")
-                );
-                frame.setVisible(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
 
     public void LoadUser() {
         utbl = (DefaultTableModel) Customers.getModel();
@@ -84,6 +59,7 @@ public class ClientFunctions extends JFrame {
         tbl.setRowCount(0);
         
         for (ProductModel product : products) {
+            Vector<Object> gameVector = new Vector<>();
             gameVector.add(product.getProductTitle());
             gameVector.add(product.getProductType());
             gameVector.add(product.getStock());

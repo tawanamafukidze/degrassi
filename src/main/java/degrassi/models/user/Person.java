@@ -136,7 +136,7 @@ public abstract class Person {
 
     public Connection dbConnection() {
         return db;
-    }
+    } //returns the MYSQL connection instance.
 
     public boolean checkPassword(String userPass) {
         return password.equals(userPass);

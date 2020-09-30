@@ -1,10 +1,8 @@
 package main.java.degrassi.views;
 
-import main.java.degrassi.mysql.MYSQLConnector;
 import main.java.degrassi.views.admin.EmployeeMainFrame;
 import main.java.degrassi.views.client.ClientMainFrame;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -16,22 +14,6 @@ import java.sql.Connection;
 
 public class MainFrame extends JFrame {
 
-	private JPanel contentPane;
-
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(() -> {
-			try {
-				Connection con = new MYSQLConnector().getDBConnection();
-				MainFrame frame = new MainFrame(con);
-				frame.setVisible(true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
-	}
 	/**
 	 * Create the frame.
 	 */
@@ -45,7 +27,7 @@ public class MainFrame extends JFrame {
 	private void getWidgets() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 479, 301);
-		contentPane = new JPanel();
+		JPanel contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(null);

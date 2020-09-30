@@ -2,10 +2,8 @@ package main.java.degrassi.views.admin;
 
 import main.java.degrassi.models.ProductModel;
 import main.java.degrassi.models.user.CustomerModel;
-import main.java.degrassi.mysql.MYSQLConnector;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -34,27 +32,14 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 
 public class AdminSearch extends JFrame {
-    private JTable tblProducts;
-    private JTable Customers;
+    private final JTable tblProducts;
+    private final JTable Customers;
 
     Connection con;
     DefaultTableModel tbl;
     DefaultTableModel uTbl;
     DefaultListModel<String> searchList;
 
-
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            try {
-                Connection myCon = new MYSQLConnector().getDBConnection();
-                new AdminSearch(
-                        myCon
-                );
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
 
     public void loadGames() {
         ArrayList<ProductModel> products = ProductModel.queryProduct(con);

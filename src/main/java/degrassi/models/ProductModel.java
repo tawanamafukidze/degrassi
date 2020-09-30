@@ -6,11 +6,11 @@ import java.sql.Connection;
 import java.util.ArrayList;
 
 public class ProductModel {
-    private String id;
-    private String title;
-    private String type;
-    private double price;
-    private int stock;
+    private final String id;
+    private final String title;
+    private final String type;
+    private final double price;
+    private final int stock;
 
     public ProductModel(String title, String type, double price, int stock, String id) {
         this.title = title;
@@ -24,14 +24,17 @@ public class ProductModel {
         return GameController.queryGames(con);
     }
 
+    //add a new product to the inventory
     public static boolean addToInventory(Connection con, String title, String type, int stock, double price) {
         return GameController.addToInventory(con, title, type, stock, price);
     }
 
+    //update game inventory when a purchase has been mad.
     public static boolean update(Connection con, String id, String title, String type, int stock, double price) {
         return GameController.updateGame(con, id, title, type, stock, price);
     }
 
+    //remove product from inventory using the product ID
     public static boolean removeByID(Connection con, String id) {
         return GameController.removeGameByID(con, id);
     }

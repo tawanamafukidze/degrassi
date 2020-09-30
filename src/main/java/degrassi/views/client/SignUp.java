@@ -3,7 +3,6 @@ package main.java.degrassi.views.client;
 import main.java.degrassi.models.AddressModel;
 import main.java.degrassi.models.user.CustomerModel;
 
-import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
@@ -17,24 +16,9 @@ import javax.swing.JPasswordField;
 
 public class SignUp extends JFrame {
 
-    private JPanel contentPane;
+    private final JPanel contentPane;
     private final JPasswordField txtPassword;
     private final JPasswordField txtRePassword;
-
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            try {
-                SignUp frame = new SignUp();
-                frame.setVisible(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
     Connection con;
 
     /**

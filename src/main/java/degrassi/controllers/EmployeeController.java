@@ -31,8 +31,6 @@ public class EmployeeController {
                 employee.setEmail(email);
                 employee.setPassword(password);
                 employee.setPhone(phone);
-                //user has logged in
-                employee.setActive(true);
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();

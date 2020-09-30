@@ -1,35 +1,15 @@
 package main.java.degrassi.views.admin;
 
 import main.java.degrassi.models.user.EmployeeModel;
-import main.java.degrassi.mysql.MYSQLConnector;
 import main.java.degrassi.views.MainFrame;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.JFormattedTextField;
-import javax.swing.JButton;
 import java.sql.Connection;
-import javax.swing.JPasswordField;
 
 public class EmployeeMainFrame extends JFrame {
     private final JPasswordField txtPassword;
 
-    //Launch the application
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            try {
-                new EmployeeMainFrame(
-                        new MYSQLConnector().getDBConnection()
-                ).setVisible(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
 
     public EmployeeMainFrame(Connection con) {
         /*
@@ -73,6 +53,11 @@ public class EmployeeMainFrame extends JFrame {
             if (employee.Active()) {
                 new AdminSearch(con);
                 dispose();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Please Check The Username And Password Provided.",
+                        "Login Error", JOptionPane.ERROR_MESSAGE
+                );
             }
         });
         contentPane.add(nxtBtn);

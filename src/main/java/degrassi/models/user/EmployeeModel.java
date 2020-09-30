@@ -11,6 +11,8 @@ public class EmployeeModel extends Person {
         super(con, email, password);
         if (isValidEntry()) {
             EmployeeController.queryEmployee(this, email, password);
+            if (getId() == null) return; //no admin with the provided details found
+            setActive(true); //user has logged in
         }
     }
 

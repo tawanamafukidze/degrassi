@@ -1,9 +1,9 @@
 package main.java.degrassi.models;
 
 public class CartItemModel {
-    private String id;
+    private final String id;
     private int quantity;
-    private ProductModel product;
+    private final ProductModel product;
 
     public CartItemModel(String id, int quantity, ProductModel product) {
         this.id = id;

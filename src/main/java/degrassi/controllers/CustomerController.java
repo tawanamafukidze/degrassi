@@ -5,7 +5,6 @@ import javax.swing.*;
 import main.java.degrassi.models.AddressModel;
 import main.java.degrassi.models.ShoppingCartModel;
 import main.java.degrassi.models.user.CustomerModel;
-import main.java.degrassi.mysql.MYSQLConnector;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

@@ -5,7 +5,11 @@ import main.java.degrassi.mysql.MYSQLConnector;
 public class Degrassi {
     private static boolean debugMode = false;
     public static void main(String[] args) {
-        if (args[0].equals("1")) {debugMode = true;}
+        if (args.length > 0) {
+            if (args[0].equals("1")) {
+                debugMode = true;
+            }
+        }
         new MainFrame(
                 new MYSQLConnector().getDBConnection()
         );

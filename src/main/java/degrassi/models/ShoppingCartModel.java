@@ -2,7 +2,6 @@ package main.java.degrassi.models;
 
 import main.java.degrassi.controllers.GameController;
 import main.java.degrassi.controllers.ShoppingCartController;
-import main.java.degrassi.mysql.MYSQLConnector;
 
 import javax.swing.*;
 import java.sql.Connection;
@@ -148,7 +147,7 @@ public class ShoppingCartModel {
 
     public ArrayList<CartItemModel> toArrayList() {
         return cartItems;
-    }
+    } //return the cartItems list when a new shopping cart model instance is returned
 
     @Override
     public String toString() {

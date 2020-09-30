@@ -2,9 +2,7 @@ package main.java.degrassi.models.user;
 
 import main.java.degrassi.controllers.CustomerController;
 import main.java.degrassi.controllers.OrdersController;
-import main.java.degrassi.controllers.ShoppingCartController;
 import main.java.degrassi.models.AddressModel;
-import main.java.degrassi.models.CartItemModel;
 import main.java.degrassi.models.OrdersModel;
 import main.java.degrassi.models.ShoppingCartModel;
 
@@ -45,6 +43,7 @@ public class CustomerModel extends Person {
     private void login(String email, String password) {
         CustomerController.queryCustomer(this, email, password);
         String customerID = getId();
+        if (customerID == null) return; //no user with the provided details found
         customerAddress = new AddressModel(dbConnection()).queryAddress(customerID);
         customerCart = new ShoppingCartModel(dbConnection(), getId()).queryCart();
         //user has logged in
@@ -74,28 +73,12 @@ public class CustomerModel extends Person {
         customerCart.removeFromCart(itemID);
     }
 
-    public void emptyCart() {
-        customerCart.emptyCart();
-    }
-
-    public void updateCart(CartItemModel items) {
-        customerCart.updateCart(items);
-    }
-
-    public void purchase() {
-        customerCart.checkOut();
-    }
-
     public void setCustomerAddress(AddressModel customerAddress) {
         this.customerAddress = customerAddress;
     }
 
-    public void setCustomerCart(ShoppingCartModel customerCart) {
-        this.customerCart = customerCart;
-    }
-
-    public ArrayList<OrdersModel> getCustomerOrders() {
-        return customerOrders;
+    public void setCustomerCart(ShoppingCartModel queriedCustomerCart) {
+        this.customerCart = queriedCustomerCart;
     }
 
     public AddressModel getCustomerAddress() {

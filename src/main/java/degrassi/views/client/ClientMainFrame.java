@@ -1,38 +1,15 @@
 package main.java.degrassi.views.client;
 
 import main.java.degrassi.models.user.CustomerModel;
-import main.java.degrassi.mysql.MYSQLConnector;
 import main.java.degrassi.views.MainFrame;
 
-import java.awt.EventQueue;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JLabel;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
 import java.sql.Connection;
-import javax.swing.JPasswordField;
 
 public class ClientMainFrame extends JFrame {
 
     private final JPasswordField txtPassword;
-
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) {
-        EventQueue.invokeLater(() -> {
-            try {
-                Connection con = new MYSQLConnector().getDBConnection();
-                ClientMainFrame frame = new ClientMainFrame(con);
-                frame.setVisible(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
-    }
 
     /**
      * Create the frame.
@@ -65,7 +42,6 @@ public class ClientMainFrame extends JFrame {
 
         JButton btnNewButton_1 = new JButton("");
         btnNewButton_1.addActionListener(e -> {
-            //TODO: LOGIN FUNCTIONALITY
             String email = txtEmailAddress.getText();
             String password = String.valueOf(txtPassword.getPassword());
 
@@ -73,6 +49,11 @@ public class ClientMainFrame extends JFrame {
             if (customer.Active()) {
                 new ClientFunctions(con, customer);
                 dispose();
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Please Check The Username And Password Provided.",
+                        "Login Error", JOptionPane.ERROR_MESSAGE
+                );
             }
         });
         btnNewButton_1.setIcon(new ImageIcon("img\\nxt4.png"));
