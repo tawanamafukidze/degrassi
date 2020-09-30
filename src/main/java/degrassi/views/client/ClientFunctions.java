@@ -11,7 +11,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.*;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -78,25 +77,19 @@ public class ClientFunctions extends JFrame {
     }
 
     public void loadGames() {
-        try {
-            pst = con.prepareStatement("select * from games");
-
-            ResultSet rs = pst.executeQuery();
-
-            tbl = (DefaultTableModel) tblProducts.getModel();
-            tbl.setRowCount(0);
-
-            while (rs.next()) {
-                Vector<Object> gameVector = new Vector<>();
-                gameVector.add(rs.getString("Title"));
-                gameVector.add(rs.getString("Type"));
-                gameVector.add(rs.getString("Stock"));
-                gameVector.add(rs.getString("Price"));
-                gameVector.add(rs.getInt("gameID"));
-                tbl.addRow(gameVector.toArray());
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(AdminSearch.class.getName()).isLoggable(Level.SEVERE);
+        ArrayList<ProductModel> products = ProductModel.queryProduct(con);
+        if (products == null) return;
+        
+        tbl = (DefaultTableModel) tblProducts.getModel();
+        tbl.setRowCount(0);
+        
+        for (ProductModel product : products) {
+            gameVector.add(product.getProductTitle());
+            gameVector.add(product.getProductType());
+            gameVector.add(product.getStock());
+            gameVector.add(product.getPrice());
+            gameVector.add(product.getId());
+            tbl.addRow(gameVector.toArray());
         }
     }
 
